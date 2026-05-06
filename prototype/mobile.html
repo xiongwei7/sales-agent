@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>作战导航 · Mobile</title>
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  .sh { width:100%; max-width:430px; height:100vh; display:flex; flex-direction:column; background:#fff; margin:0 auto; overflow:hidden; position:relative; }
+
+  /* Header */
+  .mh {
+    display:flex; align-items:center; gap:10px; padding:10px 14px;
+    background:#fff; border-bottom:1px solid var(--border); box-shadow:var(--shadow-sm);
+    z-index:10; flex-shrink:0;
+  }
+  .mh .av { width:34px; height:34px; border-radius:50%; background:var(--purple); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .mh .info { flex:1; }
+  .mh .name { font-family:var(--font-display); font-size:14px; font-weight:700; }
+  .mh .sub { font-size:9px; color:var(--text-muted); }
+  .mh .rt {
+    padding:5px 10px; border-radius:var(--r-xl); border:1px solid var(--border-light);
+    background:#fff; color:var(--text-secondary); font-size:10px; cursor:pointer;
+  }
+
+  /* Chat */
+  .chat { flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:10px; padding-bottom:110px; background:var(--bg); }
+
+  .msg { display:flex; gap:8px; animation:fadeUp 0.3s ease-out; }
+  .msg-a { align-items:flex-start; max-width:92%; }
+  .msg-u { justify-content:flex-end; }
+  .msg .mav { width:26px; height:26px; border-radius:50%; background:var(--purple); display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; color:#fff; }
+  .bub { padding:10px 13px; font-size:13px; line-height:1.55; }
+  .bub-a { background:#fff; border:1px solid var(--border-light); border-radius:12px 12px 12px 2px; color:var(--text); }
+  .bub-u { background:var(--purple); color:#fff; border-radius:12px 12px 2px 12px; max-width:75%; }
+
+  .card-c {
+    background:#fff; border:1px solid var(--border-light); border-radius:var(--r-2xl);
+    padding:14px; margin:2px 0; max-width:94%; box-shadow:var(--shadow-card);
+    animation:fadeUp 0.3s ease-out;
+  }
+
+  /* Input bar */
+  .input-bar {
+    position:absolute; bottom:48px; left:0; right:0; background:#fff;
+    border-top:1px solid var(--border); padding:8px 12px; z-index:20;
+    display:flex; align-items:center; gap:8px;
+  }
+  .input-bar .voice-btn {
+    width:36px; height:36px; border-radius:50%; border:1px solid var(--border-light);
+    background:#fff; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; transition:all 0.15s;
+  }
+  .input-bar .voice-btn:active { background:var(--purple-light); border-color:var(--purple); }
+  .input-bar .voice-btn.recording { background:var(--danger); color:#fff; border-color:var(--danger); animation:pulse 1.5s infinite; }
+  .input-bar input {
+    flex:1; border:1px solid var(--border-light); border-radius:var(--r-full);
+    padding:9px 16px; font-size:13px; font-family:var(--font-ui); outline:none;
+    background:var(--bg); color:var(--text); transition:border-color 0.15s;
+  }
+  .input-bar input:focus { border-color:var(--purple); }
+  .input-bar input::placeholder { color:var(--text-muted); }
+  .input-bar .send-btn {
+    width:36px; height:36px; border-radius:50%; border:none;
+    background:var(--purple); color:#fff; font-size:16px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    transition:all 0.15s;
+  }
+  .input-bar .send-btn:active { background:var(--purple-dark); }
+
+  /* Quickbar — compact, below input */
+  .qb {
+    position:absolute; bottom:0; left:0; right:0; background:#fff;
+    border-top:1px solid var(--border-light);
+    display:flex; justify-content:space-around; padding:4px 8px 16px; z-index:20;
+  }
+  .qb button {
+    display:flex; flex-direction:column; align-items:center; gap:1px;
+    border:none; background:none; color:var(--text-muted); font-size:8px; cursor:pointer;
+  }
+  .qb button:active { color:var(--purple); }
+  .qb .qi { font-size:14px; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+</style>
+</head>
+<body>
+<div class="sh">
+  <header class="mh">
+    <div class="av">🤖</div>
+    <div class="info"><div class="name">销售智能体</div><div class="sub" id="stitle"></div></div>
+    <button class="rt" id="rtoggle">切换角色</button>
+  </header>
+  <main class="chat" id="chat"></main>
+  <div class="input-bar">
+    <button class="voice-btn" id="voiceBtn" title="语音输入">🎤</button>
+    <input type="text" id="msgInput" placeholder="输入消息或点击麦克风语音输入..." autocomplete="off">
+    <button class="send-btn" id="sendBtn">↑</button>
+  </div>
+  <footer class="qb">
+    <button data-a="dashboard"><span class="qi">📊</span>看板</button>
+    <button data-a="map"><span class="qi">🗺️</span>地图</button>
+    <button data-a="visit"><span class="qi">📝</span>报拜访</button>
+    <button data-a="bid"><span class="qi">📋</span>标讯</button>
+    <button data-a="coach"><span class="qi">💬</span>问教练</button>
+  </footer>
+</div>
+
+<script>
+var NOW=new Date();
+function dL(n){var d=new Date(NOW);d.setDate(d.getDate()+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function fmK(n){return '¥'+(n/10).toFixed(0)+'万';}
+function fmP(a,t){return Math.round(a/t*100)+'%';}
+function fmV(v){return v+'%';}
+
+var AR={name:'张三',role:'ar',region:'华东大区',territory:'上海战区',industries:['金融'],
+  targets:{rev:{target:2800,achieved:1064,rank:'5/12'},ca:{target:1700,achieved:884,rank:'3/12'},compA:{target:100,achieved:65,rank:'6/12'},compB:{target:100,achieved:80,rank:'2/12'}},
+  strategicTasks:[{label:'高价值客户经营',done:3,total:6},{label:'海光战核客户经营',done:2,total:4},{label:'重点战役',done:1,total:3},{label:'客户拜访',done:12,total:20}],
+  bids:{intended:[{name:'某银行核心系统采购项目',amount:800,deadline:dL(6),highValue:true},{name:'某证券数据平台建设',amount:500,deadline:dL(19),highValue:true},{name:'某保险灾备项目',amount:300,deadline:dL(26),highValue:false}],public:[{name:'某医院HIS系统招标',amount:400,deadline:dL(0),highValue:true,status:'reported'},{name:'某高校信息化平台',amount:200,deadline:dL(9),highValue:false,status:'pending'},{name:'某政府部门安全项目',amount:350,deadline:dL(14),highValue:false,status:'pending'}]},
+  mapPins:[{type:'sales',name:'张三',rev:65,x:62,y:28},{type:'customer',name:'某银行总行',status:'good',x:58,y:22},{type:'customer',name:'某保险公司',status:'risk',x:45,y:62},{type:'bid',name:'某医院招标',highValue:true,x:70,y:45},{type:'competitor',name:'竞品X',x:40,y:18}]
+};
+
+var GM={name:'王指挥',role:'gm',region:'华东大区',territory:'浙江战区',industries:['金融','制造'],
+  targets:{rev:{target:18000,achieved:7560,rank:'1/6'},ca:{target:12000,achieved:6600,rank:'2/6'}},
+  strategicTasks:[{label:'高价值客户经营',done:18,total:30},{label:'海光战核客户经营',done:14,total:24},{label:'重点战役',done:8,total:18},{label:'客户拜访',done:85,total:120}],
+  bids:{intended:[{name:'某银行核心系统采购项目',amount:800,deadline:dL(6),highValue:true},{name:'某制造企业ERP项目',amount:600,deadline:dL(10),highValue:true}],public:[{name:'某国企云平台项目',amount:600,deadline:dL(5),highValue:true,status:'pending'},{name:'某医院HIS系统招标',amount:400,deadline:dL(0),highValue:true,status:'reported'}]},
+  mapPins:[{type:'sales',name:'张三',rev:65,x:55,y:20},{type:'sales',name:'王五',rev:28,x:48,y:62},{type:'customer',name:'客户B',status:'risk',x:25,y:60},{type:'bid',name:'标讯X',highValue:true,x:75,y:40}]
+};
+function gD(r){return r==='gm'?GM:AR;}
+
+var role=(new URLSearchParams(window.location.search)).get('role')||'ar';
+var data=gD(role);
+
+function addMsg(t){var c=document.getElementById('chat');var d=document.createElement('div');d.className='msg msg-a';d.innerHTML='<div class="mav">🤖</div><div class="bub bub-a">'+t+'</div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function addUser(t){var c=document.getElementById('chat');var d=document.createElement('div');d.className='msg msg-u';d.innerHTML='<div class="bub bub-u">'+t+'</div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function addCard(h){var c=document.getElementById('chat');var d=document.createElement('div');d.className='card-c';d.innerHTML=h;c.appendChild(d);c.scrollTop=c.scrollHeight;}
+
+function runGreeting(){
+  setTimeout(function(){addMsg('早上好！☀️<br>你的今日作战概览已就绪。');},400);
+  setTimeout(pushMetrics,1200);
+  if(role==='ar'){
+    setTimeout(function(){addMsg('你有 <b style="color:var(--danger)">2 个差距</b>需关注：REV 达成落后，高价值客户缺口 3 家。');},2000);
+    setTimeout(pushGap,3000);
+    setTimeout(function(){addMsg('建议优先跟进海光战核客户A，预计可贡献 ¥20万。<br>需要我帮你生成拜访计划吗？');},4200);
+  } else {
+    setTimeout(function(){addMsg('⚠️ <b style="color:var(--danger)">王五、钱七</b>达成率持续落后，需要管理干预。');},2000);
+    setTimeout(pushGap,3000);
+    setTimeout(function(){addMsg('已为你列出管理建议：绩效面谈、过程抽检、新人带教。<br>需要我帮你安排吗？');},4200);
+  }
+}
+
+function pushMetrics(){
+  var t=data.targets;
+  var items=role==='ar'?[
+    {l:'Q2 REV',v:fmP(t.rev.achieved,t.rev.target),c:'var(--danger)',s:'排名 '+t.rev.rank},
+    {l:'Q2 CA',v:fmP(t.ca.achieved,t.ca.target),c:'var(--success)',s:'排名 '+t.ca.rank},
+    {l:'竞争力 A',v:fmV(t.compA.achieved),c:'',s:'排名 '+t.compA.rank},
+    {l:'竞争力 B',v:fmV(t.compB.achieved),c:'',s:'排名 '+t.compB.rank}
+  ]:[
+    {l:'团队 REV',v:fmP(t.rev.achieved,t.rev.target),c:'var(--success)',s:'战区排名 '+t.rev.rank},
+    {l:'团队 CA',v:fmP(t.ca.achieved,t.ca.target),c:'var(--success)',s:'战区排名 '+t.ca.rank}
+  ];
+  var h='<div style="font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:8px">📊 经营目标全景</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">';
+  items.forEach(function(i){h+='<div style="background:var(--bg);border-radius:var(--r-lg);padding:10px;text-align:center;border:1px solid var(--border-light)"><div style="font-size:9px;color:var(--text-muted)">'+i.l+'</div><div class="mono" style="font-size:18px;font-weight:700;'+(i.c?'color:'+i.c:'')+'">'+i.v+'</div><div style="font-size:9px;color:var(--text-muted)">'+i.s+'</div></div>';});
+  h+='</div>'+(role==='gm'?'<div style="margin-top:6px;font-size:10px;color:var(--danger)">⚠ 王五、钱七需重点关注</div>':'')+'<div style="color:var(--purple);font-size:10px;margin-top:6px;cursor:pointer" onclick="showDashboard()">查看完整看板 →</div>';
+  addCard(h);
+}
+
+function showDashboard(){
+  addUser('展开作战看板');
+  setTimeout(function(){
+    // Target overview card
+    var t=data.targets;
+    var h='<div style="font-family:var(--font-display);font-weight:700;font-size:14px;margin-bottom:10px">📊 作战看板全览</div>';
+    h+='<div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">'+data.region+' · '+data.territory+'</div>';
+
+    // Metrics
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:10px">';
+    if(role==='ar'){
+      h+=mt('Q2 REV',fmP(t.rev.achieved,t.rev.target),'var(--danger)')+mt('Q2 CA',fmP(t.ca.achieved,t.ca.target),'var(--success)')+mt('竞争力A',fmV(t.compA.achieved),'')+mt('竞争力B',fmV(t.compB.achieved),'');
+    }else{
+      h+=mt('团队REV',fmP(t.rev.achieved,t.rev.target),'var(--success)')+mt('团队CA',fmP(t.ca.achieved,t.ca.target),'var(--success)');
+    }
+    h+='</div>';
+
+    // Strategic tasks
+    h+='<div style="font-weight:600;font-size:11px;margin-bottom:4px">🎯 战略任务达成</div>';
+    data.strategicTasks.forEach(function(tk){
+      var p=Math.round(tk.done/tk.total*100);
+      var c=p>=60?'var(--success)':p>=40?'var(--warning)':'var(--danger)';
+      h+='<div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:2px"><span>'+tk.label+'</span><span class="mono">'+tk.done+'/'+tk.total+'</span></div><div class="progress" style="margin-bottom:6px"><div class="trk '+(p>=60?'trk-s':p>=40?'trk-w':'trk-d')+'" style="width:'+p+'%"></div></div>';
+    });
+
+    // Gap
+    h+='<div style="font-weight:600;font-size:11px;margin:8px 0 4px">🔍 关键差距</div>';
+    h+=role==='ar'
+      ?'<div style="font-size:10px;color:var(--text-secondary)">⚠ REV差¥12万 · 高价值客户缺口3家</div>'
+      :'<div style="font-size:10px;color:var(--text-secondary)">⚠ 王五REV28% · 钱七拜访落后 · 赵六新人25%</div>';
+
+    addCard(h);
+  },400);
+}
+function mt(l,v,c){return '<div style="background:var(--bg);border-radius:6px;padding:8px;text-align:center;border:1px solid var(--border-light)"><div style="font-size:8px;color:var(--text-muted)">'+l+'</div><div class="mono" style="font-size:16px;font-weight:700;'+(c?'color:'+c:'')+'">'+v+'</div></div>';}
+
+function pushGap(){
+  if(role==='ar'){
+    addCard('<div style="font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:6px">🔍 差距 & 路径建议</div>'+
+      '<div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px">⚠ REV 差距 ¥12万 · 高价值客户缺口 3 家</div>'+
+      '<div style="font-size:11px;color:var(--purple);font-weight:600;margin-bottom:8px">→ 最优路径：客户A ¥20万 → 标讯某银行 ¥80万</div>'+
+      '<button class="btn btn-p btn-xs" onclick="hAct(\'帮我生成拜访计划\')">📋 生成拜访计划</button> '+
+      '<button class="btn btn-sub btn-xs" onclick="hAct(\'看看教练建议\')">🎓 教练建议</button>');
+  } else {
+    addCard('<div style="font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:6px">🚨 团队差距 & 管理建议</div>'+
+      '<div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px">王五 REV 28% · 钱七 拜访落后 · 赵六 新人达成 25%</div>'+
+      '<div style="font-size:11px;color:var(--purple);font-weight:600;margin-bottom:8px">→ 建议：绩效面谈（王五）· 过程抽检（钱七）· 带教（赵六）</div>'+
+      '<button class="btn btn-p btn-xs" onclick="hAct(\'帮我安排管理动作\')">📅 安排管理动作</button> '+
+      '<button class="btn btn-sub btn-xs" onclick="hAct(\'看看团队地图\')">🗺️ 查看团队地图</button>');
+  }
+}
+
+function hAct(t){
+  addUser(t);
+  setTimeout(function(){
+    if(t.indexOf('拜访计划')>=0){addMsg('收到。正在调用 <b>作战计划Agent</b>...');setTimeout(function(){addMsg('✅ 已生成本周重点拜访计划：<br><br>📅 <b>周二</b> 某银行总行 — 方案演示<br>📅 <b>周三</b> 某证券公司 — 商务谈判<br>📅 <b>周四</b> 某保险公司 — 回款跟进<br><br>已同步到你的日程。');},1200);}
+    else if(t.indexOf('教练')>=0){addMsg('🎓 <b>教练Agent</b> 诊断中...');setTimeout(function(){addMsg('你在<b>客户异议处理</b>方面存在提升空间。王五在类似场景下被评为优秀案例，建议先学习再模拟陪练。');},1200);setTimeout(function(){addCard('<div style="font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:4px;color:var(--success)">🏆 优秀案例：客户异议处理</div><div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px">王五在拜访某制造企业时，成功化解客户预算异议，最终签单 ¥50万。</div><div style="font-size:11px;margin-bottom:6px">核心方法：<b>先共情理解 → 数据化价值说服 → 提供替代方案</b></div><button class="btn btn-p btn-xs" onclick="hAct(\'开始模拟陪练\')">🎓 开始模拟陪练</button>');},2400);}
+    else if(t.indexOf('陪练')>=0){addMsg('启动模拟陪练场景：客户预算异议处理...<br><br>🎯 目标：在客户提出预算不足时，引导转向价值讨论。<br>📝 3轮对话模拟已就绪，随时可以开始。');}
+    else if(t.indexOf('管理动作')>=0){addMsg('收到。正在为你安排管理动作...');setTimeout(function(){addMsg('✅ 已添加 <b>王五绩效面谈</b> 到本周四 10:30<br>✅ 已标记 <b>钱七拜访记录</b> 待抽检<br>✅ 已通知 <b>孙八</b> 负责赵六新人带教');},1200);}
+    else if(t.indexOf('地图')>=0){var ps=data.mapPins||[];addCard('<div style="font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:6px">🗺️ '+data.territory+' 作战态势</div><div style="background:var(--bg);border-radius:var(--r-lg);padding:14px;text-align:center;border:1px solid var(--border-light);margin-bottom:6px"><div style="font-size:32px;margin-bottom:6px">🗺️</div><div style="font-size:11px;color:var(--text-secondary)">Sales '+(role==='gm'?'6':'8')+'人 · 客户 24 家 · 标讯 5 条 · 竞品 3 个</div><div style="font-size:10px;color:var(--text-muted);margin-top:2px">'+ps.filter(function(p){return p.status==='risk';}).length+' 个风险 · '+ps.filter(function(p){return p.highValue;}).length+' 条高价值标讯</div></div>'+(role==='gm'?'<div style="font-size:10px;color:var(--purple)">点击可下钻查看战区详情 →</div>':''));}
+    else if(t.indexOf('标讯')>=0){var b=data.bids;var all=[];b.intended.forEach(function(x){x._t='意向';all.push(x);});b.public.forEach(function(x){x._t='公开';all.push(x);});all.sort(function(a,b){if(a.highValue&&!b.highValue)return -1;if(!a.highValue&&b.highValue)return 1;return new Date(a.deadline)-new Date(b.deadline);});var h='<div style="font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:8px">📡 标讯看板</div>';all.forEach(function(x){var tt=x._t==='意向'?'<span style="display:inline-block;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:600;background:var(--purple-subtle);color:var(--purple);margin-right:4px">意向</span>':'<span style="display:inline-block;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:600;background:var(--warning-subtle);color:#b0780e;margin-right:4px">公开</span>';var ht=x.highValue?' <span class="badge badge-high">高价值</span>':'';h+='<div style="font-size:11px;padding:5px 0;border-bottom:1px solid var(--border-light);display:flex;align-items:center;gap:4px"><span style="flex:1">'+tt+ht+' '+x.name+'</span><span class="mono" style="font-size:9px;color:var(--text-muted)">'+fmK(x.amount)+' · '+x.deadline+'</span></div>';});addCard(h);}
+    else {addMsg('好的，我来帮你处理。「'+t+'」功能原型已展示核心交互流程。');}
+  },500);
+}
+
+function updateUI(){document.getElementById('stitle').textContent=role==='gm'?'作战导航 · '+data.territory+'（管辖）':'作战导航 · '+data.territory;}
+document.getElementById('rtoggle').addEventListener('click',function(){role=role==='ar'?'gm':'ar';data=gD(role);updateUI();document.getElementById('chat').innerHTML='';addMsg('已切换到 <b>'+(role==='gm'?'战区总经理':'AR Sales')+'</b> 视角');setTimeout(runGreeting,600);});
+document.querySelectorAll('.qb button').forEach(function(b){b.addEventListener('click',function(){var a=this.dataset.a;var m={dashboard:'展开作战看板',map:'看看地图',bid:'查看标讯',coach:'教练建议',visit:'我要报拜访'};if(m[a]) hAct(m[a]);});});
+
+// ═══ INPUT BAR ═══
+var input=document.getElementById('msgInput');
+var sendBtn=document.getElementById('sendBtn');
+var voiceBtn=document.getElementById('voiceBtn');
+var isRecording=false;
+
+function sendMsg(){
+  var t=input.value.trim(); if(!t) return;
+  hAct(t); input.value='';
+}
+sendBtn.addEventListener('click',sendMsg);
+input.addEventListener('keydown',function(e){if(e.key==='Enter') sendMsg();});
+
+voiceBtn.addEventListener('click',function(){
+  if(!isRecording){
+    isRecording=true;
+    voiceBtn.textContent='🔴';
+    voiceBtn.classList.add('recording');
+    addMsg('🎤 <b>正在聆听...</b>（原型模拟：2秒后自动识别）');
+    setTimeout(function(){
+      isRecording=false;
+      voiceBtn.textContent='🎤';
+      voiceBtn.classList.remove('recording');
+      var phrases=['帮我看看今天的重点客户','最近的标讯有哪些','我的目标达成怎么样','给我一些行动建议'];
+      var picked=phrases[Math.floor(Math.random()*phrases.length)];
+      input.value=picked;
+      addMsg('语音识别结果：<i>"'+picked+'"</i><br>点击发送按钮即可提问 →');
+    },2000);
+  }
+});
+
+updateUI(); setTimeout(runGreeting,500);
+</script>
+</body>
+</html>

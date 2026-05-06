@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/niangao/.claude/skills/**)",
+      "Read(//Users/niangao/.claude/plugins/**)",
+      "Read(//Users/niangao/.claude/plugins/cache/**)",
+      "Bash(bash /Users/niangao/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0/skills/brainstorming/scripts/start-server.sh --project-dir /Users/niangao/home/sales-agent-project)",
+      "Skill(browse)",
+      "Skill(browse:*)"
+    ],
+    "additionalDirectories": [
+      "/Users/niangao/home/sales-agent-project/prototype"
+    ]
+  }
+}

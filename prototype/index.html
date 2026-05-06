@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>作战导航 · 原型</title>
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  body { background: #fff; }
+  .page { max-width: 900px; margin: 0 auto; padding: 40px 24px; }
+
+  /* Header */
+  .header { text-align: center; margin-bottom: 36px; }
+  .header .tag { display:inline-block;padding:4px 12px;border-radius:var(--r-full);background:var(--purple-subtle);color:var(--purple);font-size:11px;font-weight:600;letter-spacing:0.04em;margin-bottom:12px; }
+  .header h1 { font-family:var(--font-display);font-size:32px;font-weight:700;letter-spacing:-0.5px;margin-bottom:6px; }
+  .header h1 em { color:var(--purple);font-style:normal; }
+  .header .sub { color:var(--text-muted);font-size:14px; }
+
+  /* Entry links */
+  .entry { max-width: 520px; margin: 0 auto 48px; }
+  .role-tabs { display:flex;gap:4px;justify-content:center;margin-bottom:20px; }
+  .rtab { padding:7px 18px;border-radius:var(--r-xl);border:1px solid var(--border-light);background:#fff;color:var(--text-secondary);font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s; }
+  .rtab.on { background:var(--purple);color:#fff;border-color:var(--purple); }
+  .links { display:grid;grid-template-columns:1fr 1fr;gap:14px; }
+  .link { display:flex;flex-direction:column;align-items:center;gap:8px;padding:22px 16px;border-radius:var(--r-2xl);text-decoration:none;background:#fff;border:1px solid var(--border-light);box-shadow:var(--shadow-card);transition:all 0.2s;color:var(--text); }
+  .link:hover { box-shadow:var(--shadow-hover);transform:translateY(-2px); }
+  .link.pc:hover { border-color:var(--purple); }
+  .link.mb:hover { border-color:var(--success); }
+  .link .li { font-size:32px; }
+  .link .ll { font-family:var(--font-display);font-size:15px;font-weight:700; }
+  .link .ld { font-size:11px;color:var(--text-muted);text-align:center; }
+
+  /* Intro section */
+  .intro { margin-bottom: 40px; }
+  .intro h2 { font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--purple); }
+  .intro h3 { font-size:15px;font-weight:700;margin:20px 0 10px;color:var(--purple-dark); }
+  .intro p { font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:12px; }
+
+  /* Architecture diagram */
+  .arch { background:var(--bg);border-radius:var(--r-2xl);padding:20px;margin:16px 0;border:1px solid var(--border-light); }
+  .arch-row { display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:12px; }
+  .arch-box { background:#fff;border:1px solid var(--border-light);border-radius:var(--r-lg);padding:12px 16px;text-align:center;min-width:110px;box-shadow:var(--shadow-sm); }
+  .arch-box.super { border-color:var(--purple);background:var(--purple-light);min-width:200px; }
+  .arch-box .ab-name { font-weight:700;font-size:13px; }
+  .arch-box .ab-desc { font-size:10px;color:var(--text-muted);margin-top:3px; }
+  .arch-arrow { display:flex;align-items:center;color:var(--text-muted);font-size:18px; }
+
+  /* Feature table */
+  .ft { width:100%;border-collapse:collapse;font-size:12px;margin:12px 0; }
+  .ft th { background:var(--bg);padding:10px 12px;text-align:left;font-weight:700;font-size:11px;color:var(--text-secondary);border-bottom:2px solid var(--border); }
+  .ft td { padding:10px 12px;border-bottom:1px solid var(--border-light);color:var(--text-secondary); }
+  .ft td:first-child { font-weight:600;color:var(--text);white-space:nowrap; }
+
+  /* Scenario cards */
+  .scenarios { display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin:12px 0; }
+  .sc { background:#fff;border:1px solid var(--border-light);border-radius:var(--r-xl);padding:16px;box-shadow:var(--shadow-sm); }
+  .sc .sc-icon { font-size:24px;margin-bottom:6px; }
+  .sc .sc-title { font-weight:700;font-size:13px;margin-bottom:4px; }
+  .sc .sc-desc { font-size:11px;color:var(--text-muted);line-height:1.6; }
+
+  .footer { text-align:center;padding:20px;font-size:11px;color:var(--text-muted);font-family:var(--font-mono);border-top:1px solid var(--border-light); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══════ HEADER ═══════ -->
+  <div class="header">
+    <div class="tag">PROTOTYPE v1.0</div>
+    <h1><em>🎯</em> 作战导航</h1>
+    <p class="sub">销售智能体 · 超级助理核心功能 · 战术指挥舱</p>
+  </div>
+
+  <!-- ═══════ ENTRY ═══════ -->
+  <div class="entry">
+    <div class="role-tabs">
+      <button class="rtab on" data-r="ar">AR Sales</button>
+      <button class="rtab" data-r="gm">战区总经理</button>
+    </div>
+    <div class="links">
+      <a class="link pc" id="pclink" href="pc.html?role=ar"><div class="li">🖥️</div><div class="ll">PC 指挥舱</div><div class="ld">6信息模块 · 多面板态势一览</div></a>
+      <a class="link mb" id="mblink" href="mobile.html?role=ar"><div class="li">📱</div><div class="ll">Mobile 对话流</div><div class="ld">Agent 推送 · 教练闭环</div></a>
+    </div>
+  </div>
+
+  <!-- ═══════ DEMO 介绍 ═══════ -->
+  <div class="intro">
+
+    <h2>📋 Demo 覆盖场景</h2>
+
+    <div class="scenarios">
+      <div class="sc">
+        <div class="sc-icon">🌅</div>
+        <div class="sc-title">场景一：AR Sales 每日启动</div>
+        <div class="sc-desc">打开销售智能体 → 作战导航默认呈现 → Agent 主动推送今日概览 → 查看目标全景 → 聚焦差距 & 路径建议 → 处理当日行动提醒</div>
+      </div>
+      <div class="sc">
+        <div class="sc-icon">🎯</div>
+        <div class="sc-title">场景二：差距深挖 → 触发作战行动</div>
+        <div class="sc-desc">差距告警 → AI 诊断根因 → 路径建议呈现 → 一键调用专家Agent（生成拜访计划、获取客户资料）→ 行动确认执行</div>
+      </div>
+      <div class="sc">
+        <div class="sc-icon">👔</div>
+        <div class="sc-title">场景三：战区总经理管理干预</div>
+        <div class="sc-desc">团队预警（成员排名异常）→ 一键下钻到成员个人作战导航 → AI 管理建议 → 执行管理动作（面谈、抽检、带教）</div>
+      </div>
+      <div class="sc">
+        <div class="sc-icon">🎓</div>
+        <div class="sc-title">场景四：教练闭环</div>
+        <div class="sc-desc">优秀案例沉淀：执行结果 → AI 自动判定优秀 → 教练Agent 结构化入库。问题辅导：执行遇阻 → 诊断 → 分级响应 → 模拟陪练</div>
+      </div>
+    </div>
+
+    <h2>🏗️ 销售智能体 · 产品能力架构</h2>
+
+    <p>销售智能体采用 <b>1 + N</b> Agent 协同架构，通过智能化工作引擎一站式全旅程赋能销售团队。</p>
+
+    <div class="arch">
+      <div class="arch-row">
+        <div class="arch-box super">
+          <div class="ab-name">🤖 超级助理 (Super Agent)</div>
+          <div class="ab-desc">意图理解 · 任务分派 · 上下文管理 · 成果总结<br>作战导航 ∈ 超级助理 · 默认主视图</div>
+        </div>
+      </div>
+      <div class="arch-row" style="margin-top:8px;">
+        <span class="arch-arrow">▼ 调度分派 ▼</span>
+      </div>
+      <div class="arch-row">
+        <div class="arch-box"><div class="ab-name">🔍 销售洞察</div><div class="ab-desc">情报收集 · 标讯获取<br>客户画像 · 拜访资料</div></div>
+        <div class="arch-box"><div class="ab-name">📋 作战计划</div><div class="ab-desc">目标拆解 · 任务分派<br>拜访/外呼计划</div></div>
+        <div class="arch-box"><div class="ab-name">⚡ 作战执行</div><div class="ab-desc">拜访填报 · 方案生成<br>CPQ · 商机 · 标书</div></div>
+        <div class="arch-box"><div class="ab-name">📊 作战跟进</div><div class="ab-desc">BI 分析 · 目标 Track<br>指标监控预警</div></div>
+        <div class="arch-box"><div class="ab-name">🎓 销售教练</div><div class="ab-desc">知识问答 · 智能培训<br>1对1 模拟陪练</div></div>
+      </div>
+    </div>
+
+    <h3>各 Agent 能力 & Skill 清单</h3>
+    <table class="ft">
+      <tr><th>Agent</th><th>核心 Skill</th><th>数据产出</th></tr>
+      <tr><td>🤖 超级助理</td><td>意图路由、任务编排、成果聚合</td><td>对话上下文、任务状态</td></tr>
+      <tr><td>🔍 销售洞察</td><td>标讯获取与分发、客户360画像、行业洞察、竞品情报</td><td>标讯列表、客户档案、行业报告</td></tr>
+      <tr><td>📋 作战计划</td><td>目标拆解、任务分派、拜访计划生成、外呼计划生成</td><td>计划任务、日程安排</td></tr>
+      <tr><td>⚡ 作战执行</td><td>拜访智能填报、产品方案生成、CPQ配置、商机智能生成、标书解析与生成</td><td>拜访记录、方案文档、商机数据</td></tr>
+      <tr><td>📊 作战跟进</td><td>业绩BI分析、目标达成Track、竞争力指标监控、异常预警</td><td>BI看板、预警通知</td></tr>
+      <tr><td>🎓 销售教练</td><td>知识问答、智能培训、1对1模拟陪练、优秀案例沉淀</td><td>知识条目、案例库、培训记录</td></tr>
+    </table>
+
+    <h2>🎯 作战导航 · 能力介绍</h2>
+
+    <p><b>定位：</b>作战导航是超级助理的核心功能视图（非独立 Agent），是销售智能体的默认主界面。它聚合 5 个专家 Agent 的数据，以指挥舱形态呈现目标和差距，支持差距诊断与路径规划，并反向触发专家 Agent 执行行动。</p>
+
+    <h3>6 大信息模块</h3>
+    <table class="ft">
+      <tr><th>模块</th><th>数据来源</th><th>AR Sales</th><th>战区总经理</th></tr>
+      <tr><td>📊 经营目标全景</td><td>跟进Agent</td><td>个人 REV/CA/竞争力指标 + 排名</td><td>团队 REV/CA + 战区排名 + 成员排名</td></tr>
+      <tr><td>👤 客户经营情况</td><td>执行 + 跟进</td><td>名下客户贡献/回款/风险/动态</td><td>团队客户聚合 + 异常预警</td></tr>
+      <tr><td>📡 标讯看板</td><td>洞察Agent</td><td>按战区+行业过滤，意向/公开标签区分</td><td>团队标讯分配 + 高价值跟踪</td></tr>
+      <tr><td>🎯 战略任务达成</td><td>计划 + 执行</td><td>四类任务进度条</td><td>团队进度 + 落后成员标注</td></tr>
+      <tr><td>🔍 差距 & 路径建议</td><td>AI 综合分析</td><td>个人差距 + 最优达成路径 + 一键触发</td><td>团队差距 + 管理行动建议</td></tr>
+      <tr><td>📋 行动提醒 + Feed</td><td>多 Agent 汇总</td><td>拜访/标讯/任务/会议 + Agent 推送</td><td>同上 + 团队管理提醒</td></tr>
+    </table>
+
+    <h3>核心能力</h3>
+    <div class="scenarios">
+      <div class="sc">
+        <div class="sc-icon">🔄</div>
+        <div class="sc-title">聚合展示</div>
+        <div class="sc-desc">从 5 个专家 Agent 拉取数据，统一呈现为目标-任务-差距-行动四层结构</div>
+      </div>
+      <div class="sc">
+        <div class="sc-icon">🧠</div>
+        <div class="sc-title">智能诊断</div>
+        <div class="sc-desc">AI 分析目标差距根因，生成最优达成路径，量化预期贡献</div>
+      </div>
+      <div class="sc">
+        <div class="sc-icon">🚀</div>
+        <div class="sc-title">行动调度</div>
+        <div class="sc-desc">反向触发专家 Agent：生成拜访计划、获取客户资料、触发模拟陪练等</div>
+      </div>
+      <div class="sc">
+        <div class="sc-icon">🗺️</div>
+        <div class="sc-title">作战地图</div>
+        <div class="sc-desc">全国 → 大区 → 战区三层钻取，可视化 Sales、客户、标讯、竞品、渠道分布</div>
+      </div>
+      <div class="sc">
+        <div class="sc-icon">👥</div>
+        <div class="sc-title">角色适配</div>
+        <div class="sc-desc">AR Sales 聚焦个人目标与行动，战区总经理聚焦团队排名与管理干预</div>
+      </div>
+      <div class="sc">
+        <div class="sc-icon">📱</div>
+        <div class="sc-title">双端协同</div>
+        <div class="sc-desc">PC 指挥舱多面板高密度布局，Mobile Agent 对话 + 卡片交互 + 语音输入</div>
+      </div>
+    </div>
+
+    <h3>导航隐喻</h3>
+    <p>
+      <b>目标路径可视化：</b>差距 → 根因 → 路径选项 → 预期贡献 → 行动触发<br>
+      <b>节奏监控：</b>Q2 已过 X%，按节奏应达成 Y%，当前达成 Z%，前方「拥堵/畅通」
+    </p>
+
+  </div>
+
+  <div class="footer">Kraken Design System · 6 信息模块 · 3 层地图钻取 · 教练Agent 闭环</div>
+</div>
+
+<script>
+var role='ar';
+document.querySelectorAll('.rtab').forEach(function(b){
+  b.addEventListener('click',function(){
+    role=this.dataset.r;
+    document.querySelectorAll('.rtab').forEach(function(x){x.classList.toggle('on',x.dataset.r===role);});
+    document.getElementById('pclink').href='pc.html?role='+role;
+    document.getElementById('mblink').href='mobile.html?role='+role;
+  });
+});
+</script>
+</body>
+</html>
