@@ -52,6 +52,21 @@
   .g-feed { grid-column:3/5; }
 
   .map-overlay { display:none; flex-direction:column; flex:1; overflow:hidden; background:var(--bg); }
+  .map-body { display:flex; flex:1; overflow:hidden; }
+  .map-left { flex:3; display:flex; flex-direction:column; overflow:hidden; position:relative; background:#fafbfc; }
+  .map-right { flex:2; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; background:#fff; border-left:1px solid var(--border); max-width:380px; }
+  .map-right .rp-card { background:#fff; border:1px solid var(--border-light); border-radius:var(--r-xl); padding:12px; box-shadow:var(--shadow-sm); }
+  .map-right .rp-title { font-family:var(--font-display); font-size:12px; font-weight:700; margin-bottom:8px; }
+  .map-right .rp-row { display:flex; justify-content:space-between; align-items:center; padding:4px 0; font-size:11px; border-bottom:1px solid var(--border-light); }
+  .map-right .rp-row:last-child { border-bottom:none; }
+  .map-right .rp-chips { display:flex; gap:4px; flex-wrap:wrap; margin-top:4px; }
+  .map-right .rp-chip { padding:3px 8px; border-radius:var(--r-full); font-size:10px; font-weight:600; cursor:pointer; border:1px solid var(--border-light); background:#fff; color:var(--text-secondary); transition:all 0.15s; }
+  .map-right .rp-chip.on { color:#fff; }
+  .rp-chip.sales { border-color:#7132f5; color:#7132f5; } .rp-chip.sales.on { background:#7132f5; color:#fff; }
+  .rp-chip.customer { border-color:#149e61; color:#149e61; } .rp-chip.customer.on { background:#149e61; color:#fff; }
+  .rp-chip.bid { border-color:#f5a623; color:#f5a623; } .rp-chip.bid.on { background:#f5a623; color:#fff; }
+  .rp-chip.competitor { border-color:#e54545; color:#e54545; } .rp-chip.competitor.on { background:#e54545; color:#fff; }
+  .rp-chip.partner { border-color:#5b9cf5; color:#5b9cf5; } .rp-chip.partner.on { background:#5b9cf5; color:#fff; }
 
   @media (max-width:960px) {
     .grid { grid-template-columns:1fr; padding:12px; }
@@ -66,19 +81,29 @@
   .m-bc-item.on { background:var(--purple); color:#fff; font-weight:600; }
   .m-bc-item.clk { color:var(--purple); cursor:pointer; font-weight:500; }
   .m-bc-item.clk:hover { background:var(--purple-light); }
-  .m-canvas { flex:1; padding:20px; overflow:auto; display:flex; flex-wrap:wrap; gap:14px; justify-content:center; align-content:flex-start; }
-  .m-card {
-    background:#fff; border:1px solid var(--border-light); border-radius:var(--r-2xl);
-    padding:18px; cursor:pointer; min-width:160px; box-shadow:var(--shadow-card);
-    transition:all 0.2s;
-  }
-  .m-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-hover); }
-  .m-card.mine { border-color:var(--purple); box-shadow:0 0 0 3px var(--purple-subtle); }
+  .m-canvas { flex:1; padding:0; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#fafbfc; position:relative; }
+  .m-canvas svg { width:100%; height:100%; }
+  .m-region { cursor:pointer; transition:opacity 0.15s; }
+  .m-region:hover { opacity:0.85; }
+  .m-region-label { font-size:13px; font-weight:700; fill:var(--text); text-anchor:middle; pointer-events:none; }
+  .m-region-sub { font-size:10px; fill:var(--text-muted); text-anchor:middle; pointer-events:none; }
+  .m-city { fill:var(--text-muted); font-size:9px; text-anchor:middle; }
   .m-legend { display:flex; gap:18px; justify-content:center; padding:10px 20px; font-size:11px; color:var(--text-muted); flex-shrink:0; background:#fff; border-top:1px solid var(--border); }
   .m-summary { text-align:center; padding:10px; margin:12px 20px; font-size:12px; color:var(--text-secondary); background:#fff; border-radius:var(--r-xl); border:1px solid var(--border-light); flex-shrink:0; }
   .m-pin { color:#fff; padding:2px 7px; border-radius:4px; font-size:9px; font-weight:600; white-space:nowrap; cursor:pointer; z-index:2; position:absolute; transition:transform 0.2s; }
   .m-pin:hover { transform:scale(1.15); z-index:10; }
   .m-pin.sales { border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; padding:0; }
+  .m-pin-label { font-size:8px; fill:var(--text-secondary); text-anchor:middle; }
+
+  /* Scenario bar */
+  .scenario-bar {
+    display:flex; align-items:center; gap:8px; padding:6px 20px;
+    background:var(--purple-light); border-bottom:1px solid var(--purple-subtle);
+    font-size:11px; flex-shrink:0;
+  }
+  .scenario-bar a { color:var(--purple); text-decoration:none; font-weight:600; }
+  .scenario-bar .sc-tag { background:var(--purple);color:#fff;padding:2px 8px;border-radius:var(--r-full);font-size:9px;font-weight:700; }
+  .scenario-bar .sc-step { color:var(--text-muted);font-size:10px;margin-left:auto; }
 </style>
 </head>
 <body>
@@ -101,6 +126,12 @@
     </div>
   </header>
 
+  <div class="scenario-bar" id="scenarioBar" style="display:none">
+    <a href="scenarios.html">← 返回场景汇总</a>
+    <span class="sc-tag" id="scTag"></span>
+    <span class="sc-step" id="scStep">▶ 演示进行中 — 王五、钱七标红预警，下钻查看成员详情</span>
+  </div>
+
   <main class="grid" id="grid">
     <section class="g-metrics" id="mtr"></section>
     <section class="card g-tasks" id="tasks"></section>
@@ -111,9 +142,15 @@
     <section class="card g-bids" id="bids"></section>
   </main>
 
-  <div class="map-overlay" id="moverlay"></div>
+  <div class="map-overlay" id="moverlay">
+    <div class="map-body">
+      <div class="map-left" id="mapLeft"></div>
+      <div class="map-right" id="mapRight"></div>
+    </div>
+  </div>
 </div>
 
+<script src="js/china-geo.js"></script>
 <script>
 // ═══════════════════════════════════════════
 //  MOCK DATA
@@ -125,79 +162,92 @@ function fmtP(a,t) { return Math.round(a/t*100)+'%'; }
 function fmtV(v) { return v+'%'; }
 
 var AR = {
-  name:'张三',role:'ar',region:'华东大区',territory:'上海战区',industries:['金融'],
-  targets:{rev:{target:2800,achieved:1064,rank:'5/12',trend:-1},ca:{target:1700,achieved:884,rank:'3/12',trend:1},compA:{target:100,achieved:65,rank:'6/12',trend:0},compB:{target:100,achieved:80,rank:'2/12',trend:1}},
+  name:'张三',role:'ar',region:'东南大区',territory:'浙江战区',industries:['企业级IT'],
+  targets:{rev:{target:3500,achieved:1470,rank:'3/10',trend:1},ca:{target:2200,achieved:1210,rank:'3/10',trend:1},compA:{target:100,achieved:78,rank:'4/10',trend:1},compB:{target:100,achieved:82,rank:'3/10',trend:0}},
   customers:[
-    {name:'某银行总行',rev:320,yoy:12,status:'good'},{name:'某证券公司',rev:180,yoy:-8,status:'stalled'},
-    {name:'某保险公司',rev:95,yoy:0,status:'risk'},{name:'某信托公司',rev:150,yoy:5,status:'good'},
-    {name:'某基金公司',rev:80,yoy:15,status:'good'},{name:'某租赁公司',rev:120,yoy:-3,status:'stalled'}
+    {name:'某云计算科技',rev:380,yoy:15,status:'good'},{name:'某大数据中心',rev:220,yoy:-10,status:'stalled'},
+    {name:'某互联网集团',rev:180,yoy:5,status:'good'},{name:'某金融科技公司',rev:140,yoy:-3,status:'stalled'},
+    {name:'某智能制造企业',rev:95,yoy:0,status:'risk'},{name:'某政府信息中心',rev:160,yoy:12,status:'good'}
   ],
-  strategicTasks:[{label:'高价值客户经营',done:3,total:6},{label:'海光战核客户经营',done:2,total:4},{label:'重点战役',done:1,total:3},{label:'客户拜访',done:12,total:20}],
+  strategicTasks:[{label:'高价值客户经营',done:2,total:6},{label:'海光战核客户经营',done:2,total:4},{label:'重点战役',done:1,total:3},{label:'客户拜访',done:10,total:20}],
   bids:{
-    intended:[{name:'某银行核心系统采购项目',amount:800,deadline:dL(6),highValue:true},{name:'某证券数据平台建设',amount:500,deadline:dL(19),highValue:true},{name:'某保险灾备项目',amount:300,deadline:dL(26),highValue:false}],
-    public:[{name:'某医院HIS系统招标',amount:400,deadline:dL(0),highValue:true,status:'reported'},{name:'某高校信息化平台',amount:200,deadline:dL(9),highValue:false,status:'pending'},{name:'某政府部门安全项目',amount:350,deadline:dL(14),highValue:false,status:'pending'}]
+    intended:[{name:'通用服务器框架采购',amount:1200,deadline:dL(5),highValue:true},{name:'分布式存储扩容项目',amount:900,deadline:dL(12),highValue:true},{name:'数据中心解决方案招标',amount:600,deadline:dL(20),highValue:false}],
+    public:[{name:'私有云平台建设项目',amount:1500,deadline:dL(3),highValue:true,status:'pending'},{name:'AI算力集群采购',amount:800,deadline:dL(8),highValue:true,status:'pending'},{name:'政务云安全加固项目',amount:400,deadline:dL(15),highValue:false,status:'reported'}]
   },
   actions:[
-    {type:'visit',time:'10:00',content:'拜访某银行总行 — 方案演示',priority:2},
-    {type:'bid',time:'14:00',content:'标讯：某医院HIS系统今日截止',priority:3},
+    {type:'visit',time:'10:00',content:'拜访某云计算科技 — 服务器方案演示',priority:2},
+    {type:'bid',time:'14:00',content:'标讯：私有云平台建设 3天后截止',priority:3},
     {type:'meeting',time:'16:00',content:'上海战区周会 — 目标复盘',priority:1},
-    {type:'task',time:'全天',content:'更新客户经营记录到CRM',priority:1}
+    {type:'task',time:'全天',content:'准备某大数据中心拜访沟通资料',priority:1}
   ],
   agentFeed:[
-    {from:'跟进Agent',msg:'某保险公司回款已延迟14天，建议今天联系财务确认',type:'warning'},
-    {from:'教练Agent',msg:'某银行总行拜访获评优秀案例，已沉淀到知识库',type:'success'},
-    {from:'洞察Agent',msg:'金融行业新增1条高价值意向标讯，3天后截止',type:'info'},
-    {from:'教练Agent',msg:'你在客户异议处理方面有提升空间，建议模拟陪练',type:'warning'}
+    {from:'跟进Agent',msg:'某智能制造企业回款已延迟14天，建议今天联系财务确认',type:'warning'},
+    {from:'洞察Agent',msg:'企业级IT行业新增2条高价值标讯：私有云平台、AI算力集群',type:'info'},
+    {from:'教练Agent',msg:'某云计算科技拜访获评优秀案例，已沉淀到知识库',type:'success'},
+    {from:'洞察Agent',msg:'竞品H公司在私有云平台项目已提交方案，建议尽快跟进',type:'warning'}
   ],
   mapPins:[
-    {type:'sales',name:'张三',rev:65,x:62,y:28},{type:'sales',name:'同事A',rev:52,x:35,y:48},
-    {type:'customer',name:'某银行总行',status:'good',x:58,y:22},{type:'customer',name:'某证券公司',status:'stalled',x:28,y:38},
-    {type:'customer',name:'某保险公司',status:'risk',x:45,y:62},{type:'bid',name:'某医院招标',highValue:true,x:70,y:45},
-    {type:'competitor',name:'竞品X公司',x:40,y:18},{type:'partner',name:'渠道伙伴P',x:68,y:68}
+    {type:'sales',name:'张三',rev:40,x:42,y:25},{type:'sales',name:'李四',rev:52,x:25,y:40},{type:'sales',name:'王五',rev:35,x:58,y:35},
+    {type:'sales',name:'赵六',rev:48,x:72,y:22},{type:'sales',name:'孙七',rev:30,x:35,y:55},{type:'sales',name:'周八',rev:55,x:52,y:48},
+    {type:'customer',name:'某云计算科技',status:'good',x:38,y:18},{type:'customer',name:'某大数据中心',status:'stalled',x:20,y:30},
+    {type:'customer',name:'某互联网集团',status:'good',x:65,y:15},{type:'customer',name:'某金融科技公司',status:'good',x:48,y:38},
+    {type:'customer',name:'某智能制造企业',status:'risk',x:30,y:50},{type:'customer',name:'某政府信息中心',status:'good',x:55,y:55},
+    {type:'customer',name:'某在线教育平台',status:'good',x:75,y:42},{type:'customer',name:'某物流科技公司',status:'stalled',x:15,y:45},
+    {type:'bid',name:'私有云平台建设',highValue:true,x:55,y:12},{type:'bid',name:'AI算力集群采购',highValue:true,x:70,y:32},
+    {type:'bid',name:'通用服务器框架采购',highValue:true,x:25,y:20},{type:'bid',name:'分布式存储扩容',highValue:true,x:40,y:60},
+    {type:'competitor',name:'竞品H公司',x:50,y:8},{type:'competitor',name:'竞品D科技',x:78,y:50},
+    {type:'partner',name:'渠道伙伴S',x:68,y:65},{type:'partner',name:'集成商T',x:10,y:35},{type:'partner',name:'分销商U',x:60,y:28}
   ]
 };
 
 var GM = {
-  name:'王指挥',role:'gm',region:'华东大区',territory:'浙江战区',industries:['金融','制造'],
-  targets:{rev:{target:18000,achieved:7560,rank:'1/6',trend:1},ca:{target:12000,achieved:6600,rank:'2/6',trend:1}},
+  name:'王指挥',role:'gm',region:'东南大区',territory:'浙江战区',industries:['企业级IT','制造'],
+  targets:{rev:{target:18000,achieved:7560,rank:'2/8',trend:1},ca:{target:13000,achieved:7150,rank:'2/8',trend:1}},
   members:[
-    {name:'张三',rev:65,ca:58,status:'good'},{name:'李四',rev:52,ca:60,status:'good'},
+    {name:'张三',rev:40,ca:55,status:'good'},{name:'李四',rev:52,ca:60,status:'good'},
     {name:'王五',rev:28,ca:35,status:'risk'},{name:'赵六',rev:25,ca:30,status:'risk'},
     {name:'钱七',rev:18,ca:22,status:'critical'},{name:'孙八',rev:48,ca:55,status:'good'}
   ],
-  strategicTasks:[{label:'高价值客户经营',done:18,total:30},{label:'海光战核客户经营',done:14,total:24},{label:'重点战役',done:8,total:18},{label:'客户拜访',done:85,total:120}],
+  strategicTasks:[{label:'高价值客户经营',done:16,total:30},{label:'海光战核客户经营',done:14,total:24},{label:'重点战役',done:9,total:18},{label:'客户拜访',done:78,total:120}],
   bids:{
-    intended:[{name:'某银行核心系统采购项目',amount:800,deadline:dL(6),highValue:true},{name:'某证券数据平台建设',amount:500,deadline:dL(19),highValue:true},{name:'某制造企业ERP项目',amount:600,deadline:dL(10),highValue:true}],
-    public:[{name:'某医院HIS系统招标',amount:400,deadline:dL(0),highValue:true,status:'reported'},{name:'某高校信息化平台',amount:200,deadline:dL(9),highValue:false,status:'pending'},{name:'某政府部门安全项目',amount:350,deadline:dL(14),highValue:false,status:'pending'},{name:'某国企云平台项目',amount:600,deadline:dL(5),highValue:true,status:'pending'}]
+    intended:[{name:'通用服务器框架采购',amount:1200,deadline:dL(5),highValue:true},{name:'分布式存储扩容项目',amount:900,deadline:dL(12),highValue:true},{name:'智能制造MES平台',amount:700,deadline:dL(10),highValue:true}],
+    public:[{name:'私有云平台建设项目',amount:1500,deadline:dL(3),highValue:true,status:'pending'},{name:'AI算力集群采购',amount:800,deadline:dL(8),highValue:true,status:'pending'},{name:'政务云安全加固项目',amount:400,deadline:dL(15),highValue:false,status:'reported'},{name:'数据中心解决方案招标',amount:600,deadline:dL(5),highValue:true,status:'pending'}]
   },
   actions:[
     {type:'visit',time:'10:30',content:'与王五绩效面谈',priority:2},
-    {type:'visit',time:'14:00',content:'拜访重点客户F — 商务谈判',priority:2},
+    {type:'visit',time:'14:00',content:'拜访某互联网集团 — 商务谈判',priority:2},
     {type:'meeting',time:'16:00',content:'战区周会',priority:1},
     {type:'task',time:'本周',content:'抽检钱七拜访记录',priority:1}
   ],
   agentFeed:[
     {from:'跟进Agent',msg:'王五REV达成仅28%，已连续2周落后，建议绩效面谈',type:'danger'},
     {from:'跟进Agent',msg:'钱七拜访量仅达标40%，需过程抽检',type:'warning'},
-    {from:'洞察Agent',msg:'华东大区今日新增3条高价值标讯待分配',type:'info'},
+    {from:'洞察Agent',msg:'东南大区新增私有云平台、AI算力集群等高价值标讯待分配',type:'info'},
     {from:'教练Agent',msg:'赵六作为新人，建议本周安排带教计划',type:'info'}
   ],
   regions:{
-    national:[
-      {name:'华东大区',rev:48,rank:1,count:6,isMine:true},{name:'华南大区',rev:42,rank:2,count:5,isMine:false},
-      {name:'华北大区',rev:40,rank:3,count:5,isMine:false},{name:'西南大区',rev:35,rank:4,count:4,isMine:false},
-      {name:'西北大区',rev:30,rank:5,count:3,isMine:false},{name:'华中大区',rev:28,rank:6,count:4,isMine:false}
+    list:[
+      {key:'东北',name:'东北大区',rev:38,rank:5,territories:2,isMine:false},
+      {key:'华北',name:'华北大区',rev:45,rank:2,territories:5,isMine:false},
+      {key:'中东',name:'中东大区',rev:40,rank:4,territories:4,isMine:false},
+      {key:'华东',name:'华东大区',rev:48,rank:1,territories:3,isMine:false},
+      {key:'东南',name:'东南大区',rev:42,rank:3,territories:3,isMine:true},
+      {key:'西北',name:'西北大区',rev:32,rank:7,territories:3,isMine:false},
+      {key:'西南',name:'西南大区',rev:35,rank:6,territories:3,isMine:false},
+      {key:'华南',name:'华南大区',rev:44,rank:3,territories:3,isMine:false}
     ],
-    east:[
-      {name:'上海战区',rev:52,rank:1,sales:8,customers:32,isMine:false},{name:'江苏战区',rev:45,rank:2,sales:7,customers:28,isMine:false},
-      {name:'浙江战区',rev:42,rank:3,sales:6,customers:24,isMine:true},{name:'安徽战区',rev:38,rank:4,sales:5,customers:18,isMine:false},
-      {name:'福建战区',rev:35,rank:5,sales:4,customers:15,isMine:false},{name:'江西战区',rev:30,rank:6,sales:3,customers:12,isMine:false}
-    ]
+    currentRegion:'东南'
   },
   mapPins:[
-    {type:'sales',name:'张三',rev:65,x:55,y:20},{type:'sales',name:'李四',rev:52,x:30,y:45},{type:'sales',name:'王五',rev:28,x:48,y:62},
-    {type:'customer',name:'客户A',status:'good',x:60,y:30},{type:'customer',name:'客户B',status:'risk',x:25,y:60},
-    {type:'bid',name:'标讯X项目',highValue:true,x:75,y:40},{type:'competitor',name:'竞品Y',x:45,y:15},{type:'partner',name:'伙伴Z',x:60,y:70}
+    {type:'sales',name:'张三',rev:40,x:42,y:25},{type:'sales',name:'李四',rev:52,x:25,y:40},{type:'sales',name:'王五',rev:28,x:58,y:35},
+    {type:'sales',name:'赵六',rev:48,x:72,y:22},{type:'sales',name:'孙七',rev:30,x:35,y:55},{type:'sales',name:'周八',rev:55,x:52,y:48},
+    {type:'customer',name:'某云计算科技',status:'good',x:38,y:18},{type:'customer',name:'某大数据中心',status:'risk',x:20,y:30},
+    {type:'customer',name:'某互联网集团',status:'good',x:65,y:15},{type:'customer',name:'某金融科技公司',status:'good',x:48,y:38},
+    {type:'customer',name:'某智能制造企业',status:'risk',x:30,y:50},{type:'customer',name:'某政府信息中心',status:'good',x:55,y:55},
+    {type:'bid',name:'私有云平台建设',highValue:true,x:55,y:12},{type:'bid',name:'AI算力集群采购',highValue:true,x:70,y:32},
+    {type:'bid',name:'通用服务器框架采购',highValue:true,x:25,y:20},{type:'bid',name:'分布式存储扩容',highValue:true,x:40,y:60},
+    {type:'competitor',name:'竞品H公司',x:50,y:8},{type:'competitor',name:'竞品D科技',x:78,y:50},
+    {type:'partner',name:'渠道伙伴S',x:68,y:65},{type:'partner',name:'集成商T',x:10,y:35},{type:'partner',name:'分销商U',x:60,y:28}
   ]
 };
 
@@ -346,11 +396,11 @@ function renderGap(){
   c.innerHTML='<div class="sec-hd"><span>🔍</span> 差距 & 路径建议 <span class="st">AI 诊断 · 一键行动</span></div>';
   if(role==='ar'){
     c.appendChild(h('div',{s:'padding:12px;border-radius:var(--r-lg);background:var(--warning-subtle);border:1px solid rgba(245,166,35,0.2);margin-bottom:8px',h:
-      '<div style="font-weight:700;font-size:12px;margin-bottom:4px">⚠ REV 差距 ¥12万 · 高价值客户缺口 3 家</div>'+
-      '<div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px">根因：高潜客户A未覆盖 · 客户B商机停滞 · 客户C续约风险</div>'+
-      '<div style="font-size:12px;color:var(--purple);font-weight:600;margin-bottom:10px">→ 最优路径：客户A ¥20万 → 标讯某银行 ¥80万 → 续约客户C ¥5万</div>'+
-      '<button class="btn btn-p btn-xs" onclick="alert(\'🤖 已触发作战计划Agent\\n\\n✅ 已生成本周重点拜访计划\\n✅ 已同步到行动提醒\')">📋 生成拜访计划</button> '+
-      '<button class="btn btn-sub btn-xs" onclick="alert(\'🔍 已触发洞察Agent\\n\\n正在获取客户A 360画像...\')">📁 获取客户资料</button>'}));
+      '<div style="font-weight:700;font-size:12px;margin-bottom:4px">⚠ REV 差距 ¥19万 · 某云计算科技未覆盖 · 某大数据中心商机停滞</div>'+
+      '<div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px">根因：某云计算科技未覆盖 · 某大数据中心商机停滞 · 某智能制造企业续约风险</div>'+
+      '<div style="font-size:12px;color:var(--purple);font-weight:600;margin-bottom:10px">→ 最优路径：某云计算科技 ¥32万 → 通用服务器标讯 ¥120万 → 续约某智能制造 ¥10万</div>'+
+      '<button class="btn btn-p btn-xs" onclick="alert(\'🤖 已触发作战计划Agent\\n\\n✅ 已生成今日拜访计划：\\n上午 某云计算科技 — 服务器方案演示\\n下午 某大数据中心 — 存储扩容沟通\\n\\n✅ 已同步到行动提醒\')">📋 生成拜访计划</button> '+
+      '<button class="btn btn-sub btn-xs" onclick="alert(\'🔍 已触发洞察Agent\\n\\n正在获取某云计算科技360画像和拜访资料包...\')">📁 获取拜访资料</button>'}));
   } else {
     c.appendChild(h('div',{s:'padding:12px;border-radius:var(--r-lg);background:var(--danger-subtle);border:1px solid rgba(229,69,69,0.2);margin-bottom:8px',h:
       '<div style="font-weight:700;font-size:12px;margin-bottom:4px">🚨 团队 REV 差距 ¥244万 · 3 名成员落后</div>'+
@@ -394,68 +444,349 @@ function renderFeed(){
 }
 
 // ═══════ MAP ═══════
+// ═══════ MAP STATE ═══════
+var currentRegionKey='东南';
+var currentTerritoryKey=null;
+var mapFilter='all';
 var PIN_COLORS={sales:{bg:'#7132f5',label:'Sales'},customer:{bg:'#149e61',label:'客户'},bid:{bg:'#f5a623',label:'标讯'},competitor:{bg:'#e54545',label:'竞品'},partner:{bg:'#5b9cf5',label:'伙伴'}};
 
 function renderMap(){
   var overlay=document.getElementById('moverlay'); if(!overlay) return;
   overlay.innerHTML=''; overlay.style.display='flex';
 
-  var levels=role==='gm'?[{k:'national',l:'🇨🇳 全国'},{k:'region',l:'🏢 '+data.region},{k:'territory',l:'📍 '+data.territory}]:[{k:'territory',l:'📍 '+data.territory}];
+  var levels=role==='gm'?[{k:'national',l:'🇨🇳 全国'}]:[];
+  if(role==='gm'&&mapLevel!=='national'){
+    levels.push({k:'region',l:'🏢 '+currentRegionKey+'大区'});
+  }
+  if(mapLevel==='territory'){
+    levels.push({k:'territory',l:'📍 '+(currentTerritoryKey||data.territory)+'战区'});
+  }
+  if(role==='ar') levels=[{k:'territory',l:'📍 '+data.territory+'战区'}];
+
   var bc=h('div',{c:'m-bc'});
   levels.forEach(function(lv,i){
-    var active=lv.k===mapLevel, clk=role==='gm'&&!active;
+    var active=lv.k===mapLevel, clk=!active;
     bc.appendChild(h('span',{c:'m-bc-item'+(active?' on':'')+(clk?' clk':''),
       h:lv.l+(active?' <span style="font-size:9px;opacity:0.7">● 当前位置</span>':''),
-      oclick:clk?function(){mapLevel=lv.k;renderMap();}:null}));
+      oclick:clk?function(){mapLevel=lv.k;if(lv.k==='national'){currentRegionKey=null;currentTerritoryKey=null;}renderMap();}:null}));
     if(i<levels.length-1) bc.appendChild(h('span',{h:' ▸ ',s:'color:var(--text-muted);margin:0 2px'}));
   });
   overlay.appendChild(bc);
 
+  // Body with left/right split
+  var body=h('div',{c:'map-body'});
+  var left=h('div',{c:'map-left'});
+  var right=h('div',{c:'map-right'});
+
   var canvas=h('div',{c:'m-canvas'});
-  if(mapLevel==='national'){
-    data.regions.national.forEach(function(r){
-      canvas.appendChild(h('div',{c:'m-card'+(r.isMine?' mine':''),
-        h:'<div style="font-family:var(--font-display);font-weight:700;font-size:15px;'+(r.isMine?'color:var(--purple)':'')+'">'+r.name+(r.isMine?' <span style="font-size:10px;color:var(--purple)">◀ 我的大区</span>':'')+'</div>'+
-        '<div class="mono" style="font-size:22px;font-weight:700;margin:8px 0;color:var(--success)">'+r.rev+'%</div>'+
-        '<div style="font-size:11px;color:var(--text-muted)">排名 '+r.rank+' · '+r.count+' 个战区</div>',
-        oclick:function(){mapLevel='region';renderMap();}}));
+  if(mapLevel==='national') renderNationalGeo(canvas);
+  else if(mapLevel==='region') renderRegionGeo(canvas);
+  else renderTerritoryGeo(canvas,right);
+  left.appendChild(canvas);
+
+  if(mapLevel==='territory'){
+    var leg=h('div',{c:'m-legend'});
+    Object.keys(PIN_COLORS).forEach(function(k){
+      leg.appendChild(h('div',{s:'display:flex;align-items:center;gap:5px',h:
+        '<span style="display:inline-block;width:10px;height:10px;background:'+PIN_COLORS[k].bg+';border-radius:'+(k==='sales'?'50%':'2px')+'"></span>'+PIN_COLORS[k].label}));
     });
+    left.appendChild(leg);
+    // Build right dashboard
+    renderRightDashboard(right);
   } else if(mapLevel==='region'){
-    data.regions.east.forEach(function(r){
-      canvas.appendChild(h('div',{c:'m-card'+(r.isMine?' mine':''),
-        h:'<div style="font-family:var(--font-display);font-weight:700;font-size:15px;'+(r.isMine?'color:var(--purple)':'')+'">📍 '+r.name+(r.isMine?' <span style="font-size:10px;color:var(--purple)">◀ 我的战区</span>':'')+'</div>'+
-        '<div class="mono" style="font-size:22px;font-weight:700;margin:8px 0;color:var(--success)">'+r.rev+'%</div>'+
-        '<div style="font-size:11px;color:var(--text-muted)">排名 '+r.rank+' · Sales '+r.sales+'人 · 客户 '+r.customers+'家</div>',
-        oclick:function(){mapLevel='territory';renderMap();}}));
-    });
+    renderRegionSummary(right);
   } else {
-    canvas.style.position='relative'; canvas.style.minHeight='380px';
-    canvas.style.background='linear-gradient(135deg, #fafbfc 0%, #f0f2f5 50%, #e8ecf1 100%)';
-    canvas.style.borderRadius='var(--r-2xl)'; canvas.style.border='1px solid var(--border-light)';
-    data.mapPins.forEach(function(p){
-      var s=PIN_COLORS[p.type]||PIN_COLORS.customer;
-      var isCircle=p.type==='sales';
-      canvas.appendChild(h('div',{c:'m-pin'+(isCircle?' sales':''),
-        s:'top:'+p.y+'%;left:'+p.x+'%;background:'+s.bg+';'+(isCircle?'':'box-shadow:0 2px 8px '+s.bg+'44'),
-        h:isCircle?p.name.charAt(0):p.name,
-        oclick:function(){alert('📍 '+p.name+(p.rev?'\nREV: '+p.rev+'%':'')+(p.status==='risk'?'\n⚠️ 风险客户':'')+(p.highValue?'\n⭐ 高价值标讯':''));}}));
+    renderNationalSummary(right);
+  }
+
+  body.appendChild(left); body.appendChild(right);
+  overlay.appendChild(body);
+}
+
+// ═══════ RIGHT PANEL DASHBOARD ═══════
+function renderRightDashboard(right){
+  var t=data.targets;
+  var tKey=currentTerritoryKey||data.territory.replace('战区','');
+  var allBids=(data.bids?(data.bids.intended||[]).concat(data.bids.public||[]):[]);
+
+  // Filter chips
+  right.appendChild(h('div',{c:'rp-card',h:
+    '<div class="rp-title">🔍 图层筛选</div>'+
+    '<div class="rp-chips">'+
+    '<span class="rp-chip sales'+(mapFilter==='all'||mapFilter==='sales'?' on':'')+'" onclick="setFilter(\'sales\')">Sales '+(data.mapPins||[]).filter(function(p){return p.type==='sales';}).length+'</span>'+
+    '<span class="rp-chip customer'+(mapFilter==='all'||mapFilter==='customer'?' on':'')+'" onclick="setFilter(\'customer\')">客户 '+(data.mapPins||[]).filter(function(p){return p.type==='customer';}).length+'</span>'+
+    '<span class="rp-chip bid'+(mapFilter==='all'||mapFilter==='bid'?' on':'')+'" onclick="setFilter(\'bid\')">标讯 '+(data.mapPins||[]).filter(function(p){return p.type==='bid';}).length+'</span>'+
+    '<span class="rp-chip competitor'+(mapFilter==='all'||mapFilter==='competitor'?' on':'')+'" onclick="setFilter(\'competitor\')">竞品 '+(data.mapPins||[]).filter(function(p){return p.type==='competitor';}).length+'</span>'+
+    '<span class="rp-chip partner'+(mapFilter==='all'||mapFilter==='partner'?' on':'')+'" onclick="setFilter(\'partner\')">伙伴 '+(data.mapPins||[]).filter(function(p){return p.type==='partner';}).length+'</span>'+
+    '<span class="rp-chip" style="'+(mapFilter==='all'?'background:#eee;':';')+'" onclick="setFilter(\'all\')">全部</span>'+
+    '</div>'
+  }));
+
+  // Metrics
+  var revPct=fmtP(t.rev.achieved,t.rev.target);
+  var caPct=fmtP(t.ca.achieved,t.ca.target);
+  right.appendChild(h('div',{c:'rp-card',h:
+    '<div class="rp-title">📊 '+tKey+'战区 · 经营目标</div>'+
+    '<div class="rp-row"><span>REV 达成</span><span class="mono" style="font-weight:700;color:var(--danger)">'+revPct+'</span></div>'+
+    '<div class="rp-row"><span>CA 达成</span><span class="mono" style="font-weight:700;color:var(--success)">'+caPct+'</span></div>'+
+    '<div class="rp-row"><span>排名</span><span>'+t.rev.rank+'</span></div>'+
+    (role==='ar'?'<div class="rp-row"><span>竞争力A</span><span class="mono">'+fmtV(t.compA.achieved)+'</span></div><div class="rp-row"><span>竞争力B</span><span class="mono">'+fmtV(t.compB.achieved)+'</span></div>':'')
+  }));
+
+  // Sales list
+  var salesPins=(data.mapPins||[]).filter(function(p){return p.type==='sales';});
+  if(salesPins.length){
+    right.appendChild(h('div',{c:'rp-card',h:
+      '<div class="rp-title">👤 Sales 列表 ('+salesPins.length+'人)</div>'+
+      salesPins.map(function(p,i){ return '<div class="rp-row sales-item" id="sitem-'+i+'"><span>'+p.name+'</span><span class="mono">REV '+p.rev+'%</span></div>'; }).join('')
+    }));
+  }
+
+  // Customer list
+  if(data.customers){
+    right.appendChild(h('div',{c:'rp-card',h:
+      '<div class="rp-title">🏢 客户列表 ('+data.customers.length+'家)</div>'+
+      data.customers.map(function(c,i){
+        var sb=c.status==='good'?'<span class="badge badge-s">正常</span>':c.status==='stalled'?'<span class="badge badge-w">停滞</span>':'<span class="badge badge-d">风险</span>';
+        return '<div class="rp-row cust-item" id="citem-'+i+'"><span>'+c.name+'</span>'+sb+'</div>';
+      }).join('')
+    }));
+  }
+
+  // Bid list
+  if(allBids.length){
+    right.appendChild(h('div',{c:'rp-card',h:
+      '<div class="rp-title">📡 标讯列表 ('+allBids.length+'条)</div>'+
+      allBids.map(function(b,i){
+        var tt=b._t||'意向';
+        var tg=tt==='意向'?'<span class="badge badge-purple">意向</span>':'<span class="badge badge-w">公开</span>';
+        return '<div class="rp-row bid-item" id="bitem-'+i+'"><span>'+tg+' '+b.name+'</span><span class="mono" style="font-size:10px">'+fmtK(b.amount||0)+'</span></div>';
+      }).join('')
+    }));
+  }
+
+  // Partner list
+  var partnerPins=(data.mapPins||[]).filter(function(p){return p.type==='partner';});
+  if(partnerPins.length){
+    right.appendChild(h('div',{c:'rp-card',h:
+      '<div class="rp-title">🤝 渠道伙伴 ('+partnerPins.length+'家)</div>'+
+      partnerPins.map(function(p,i){ return '<div class="rp-row partner-item" id="pitem-'+i+'"><span>'+p.name+'</span></div>'; }).join('')
+    }));
+  }
+}
+
+function highlightItem(type,idx){
+  var prefix={sales:'sitem',customer:'citem',bid:'bitem',partner:'pitem'}[type];
+  if(!prefix) return;
+  var el=document.getElementById(prefix+'-'+idx);
+  if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.style.background='var(--purple-light)'; setTimeout(function(){el.style.background='';},1500); }
+}
+
+function setFilter(type){
+  mapFilter=mapFilter===type?'all':type;
+  renderMap();
+}
+
+function renderRegionSummary(right){
+  var region=CHINA_REGIONS[currentRegionKey];
+  var territories=region?region.territories:{};
+  var tKeys=Object.keys(territories);
+  var rCount=tKeys.length;
+  var revData={华东:48,华北:45,华南:44,东南:42,中东:40,东北:38,西南:35,西北:32};
+  right.appendChild(h('div',{c:'rp-card',h:
+    '<div class="rp-title">🏢 '+currentRegionKey+'大区 · 概览</div>'+
+    '<div class="rp-row"><span>战区数</span><span class="mono">'+rCount+' 个</span></div>'+
+    '<div class="rp-row"><span>REV 达成</span><span class="mono" style="color:var(--success)">'+(revData[currentRegionKey]||40)+'%</span></div>'+
+    '<div class="rp-row"><span>全国排名</span><span class="mono">'+(Object.keys(revData).indexOf(currentRegionKey)+1)+'/8</span></div>'
+  }));
+  // Territory comparison
+  if(rCount){
+    var mockTR={上海:52,江苏:45,浙江:42,安徽:38,福建:35,江西:30,北京:48,天津:40,河北:42,山西:35,内蒙古:38,山东:44,河南:40,湖南:36,湖北:38,黑吉:35,辽宁:40,新疆:30,甘青宁:28,陕西:34,川藏:32,重庆:38,云贵:30,广东:46,桂海:32,深圳:50};
+    right.appendChild(h('div',{c:'rp-card',h:
+      '<div class="rp-title">📊 战区 REV 对比</div>'+
+      tKeys.map(function(k){ return '<div class="rp-row" onclick="drillTerritory(\''+k+'\')" style="cursor:pointer"><span>'+k+'</span><span class="mono">'+(mockTR[k]||40)+'%</span></div>'; }).join('')
+    }));
+  }
+  right.appendChild(h('div',{s:'font-size:10px;color:var(--text-muted);padding:4px 8px',h:'点击战区名称可下钻查看详情'}));
+}
+
+function renderNationalSummary(right){
+  var allRegions=['东北','华北','中东','华东','东南','西北','西南','华南'];
+  var revData={华东:48,华北:45,华南:44,东南:42,中东:40,东北:38,西南:35,西北:32};
+  var tcData={华东:3,华北:5,华南:3,东南:3,中东:4,东北:2,西南:3,西北:3};
+  right.appendChild(h('div',{c:'rp-card',h:
+    '<div class="rp-title">🇨🇳 全国概览</div>'+
+    '<div class="rp-row"><span>大区数</span><span class="mono">8 个</span></div>'+
+    '<div class="rp-row"><span>战区数</span><span class="mono">26 个</span></div>'+
+    '<div class="rp-row"><span>全国 REV 均值</span><span class="mono">42%</span></div>'
+  }));
+  // Region ranking
+  right.appendChild(h('div',{c:'rp-card',h:
+    '<div class="rp-title">🏆 大区 REV 排名</div>'+
+    allRegions.map(function(k,i){
+      var isMine=k===currentRegionKey;
+      return '<div class="rp-row" onclick="drillRegion(\''+k+'\')" style="cursor:pointer;'+(isMine?'background:var(--purple-light);border-radius:4px;padding:4px 8px':'')+'"><span>'+(i+1)+'. '+k+(isMine?' ◀':'')+'</span><span class="mono">'+(revData[k]||40)+'%</span><span style="font-size:10px;color:var(--text-muted)">'+tcData[k]+'战区</span></div>';
+    }).join('')
+  }));
+  right.appendChild(h('div',{s:'font-size:10px;color:var(--text-muted);padding:4px 8px',h:'点击大区可下钻查看详情'}));
+}
+
+function renderNationalGeo(canvas){
+  if(!window.CHINA_REGIONS){ canvas.innerHTML='<div style="padding:40px;text-align:center;color:var(--text-muted)">地图数据加载中...</div>'; return; }
+  var svg='<svg viewBox="73.5 3.4 61.6 50.2" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">';
+  svg+='<g transform="matrix(1 0 0 -1 0 57)">';
+  svg+='<rect x="73.5" y="3.4" width="61.6" height="50.2" fill="#eef1f5"/>';
+  // Layer 1: national base
+  var allPaths=[];
+  Object.values(CHINA_REGIONS).forEach(function(r){ r.paths.forEach(function(d){ allPaths.push(d); }); });
+  allPaths.forEach(function(d){ svg+='<path d="'+d+'" fill="#f7f8fa" stroke="none"/>'; });
+  // Layer 2: region-colored provinces
+  var colors=['#eef3f8','#e6ecf4','#e2e9f2','#f2eef8','#f8eeee','#eef6f0','#fcf6ee','#e8f0f8'];
+  var ci=0;
+  Object.keys(CHINA_REGIONS).forEach(function(key){
+    var r=CHINA_REGIONS[key];
+    var isMine=key===currentRegionKey;
+    var color=isMine?'#d8e8fb':colors[ci%colors.length];
+    var sw=0.08;
+    var stroke=isMine?'#5b9cf5':'#c8d0dc';
+    r.paths.forEach(function(d){
+      svg+='<path d="'+d+'" fill="'+color+'" stroke="'+stroke+'" stroke-width="'+sw+'" class="m-region" data-region="'+key+'"/>';
+    });
+    ci++;
+  });
+  svg+='</g>';
+  // Labels (outside transform so they read normally)
+  var labels={华北:'116,40',东北:'126,46',华东:'119,31',东南:'117,26',中东:'113,32',华南:'110,23',西南:'103,29',西北:'94,38'};
+  Object.keys(labels).forEach(function(k){
+    var p=labels[k].split(',');
+    var isMine=k===currentRegionKey;
+    svg+='<text x="'+p[0]+'" y="'+(57-parseFloat(p[1]))+'" font-size="0.8" font-weight="500" fill="'+(isMine?'#5b9cf5':'#777')+'" text-anchor="middle" pointer-events="none">'+k+(isMine?' ◀':'')+'</text>';
+  });
+  svg+='</svg>';
+  canvas.innerHTML=svg;
+  canvas.onclick=function(e){ var r=e.target.closest('[data-region]'); if(r){ drillRegion(r.getAttribute('data-region')); } };
+}
+
+function renderRegionGeo(canvas){
+  if(!window.CHINA_REGIONS||!CHINA_REGIONS[currentRegionKey]){ canvas.innerHTML='<div style="padding:40px;text-align:center;color:var(--text-muted)">请先选择大区</div>'; return; }
+  var rData=CHINA_REGIONS[currentRegionKey];
+  var territories=rData.territories;
+  // Compute bounding box
+  var minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+  Object.values(territories).forEach(function(t){
+    t.paths.forEach(function(d){
+      var nums=(d.match(/[\d.]+/g)||[]).map(Number);
+      for(var i=0;i<nums.length;i+=2){ if(nums[i]<minX)minX=nums[i];if(nums[i]>maxX)maxX=nums[i];if(nums[i+1]<minY)minY=nums[i+1];if(nums[i+1]>maxY)maxY=nums[i+1]; }
+    });
+  });
+  var padX=(maxX-minX)*0.1,padY=(maxY-minY)*0.1;
+  var vb=[minX-padX,minY-padY,maxX-minX+padX*2,maxY-minY+padY*2].join(' ');
+  var colors=['#eaf2fa','#fceae8','#e8f5ea','#fef6e8','#f4eaf8','#eaf5f5'];
+  var midY=minY+maxY;
+  var svg='<svg viewBox="'+vb+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">';
+  svg+='<g transform="matrix(1 0 0 -1 0 '+midY+')">';
+  svg+='<rect x="'+(minX-padX)+'" y="'+(minY-padY)+'" width="'+(maxX-minX+padX*2)+'" height="'+(maxY-minY+padY*2)+'" fill="#eef1f5"/>';
+  Object.values(territories).forEach(function(t){ t.paths.forEach(function(d){ svg+='<path d="'+d+'" fill="#f7f8fa" stroke="none"/>'; }); });
+  var ci=0;
+  Object.keys(territories).forEach(function(key){
+    var t=territories[key];
+    var isMine=key===currentTerritoryKey;
+    var color=isMine?'#d8e8fb':colors[ci%colors.length];
+    var stroke=isMine?'#7132f5':'#d0d7e0';
+    var sw=0.08;
+    t.paths.forEach(function(d){
+      svg+='<path d="'+d+'" fill="'+color+'" stroke="'+stroke+'" stroke-width="'+sw+'" class="m-region" data-territory="'+key+'"/>';
+    });
+    ci++;
+  });
+  svg+='</g>';
+  Object.keys(territories).forEach(function(key){
+    var t=territories[key];
+    var d=t.paths[0];
+    var nums=(d.match(/[\d.]+/g)||[]).map(Number);
+    var cx=0,cy=0,cnt=0;
+    for(var i=0;i<Math.min(nums.length,40);i+=2){cx+=nums[i];cy+=nums[i+1];cnt++;}
+    cx/=cnt;cy/=cnt;
+    var isMine=key===currentTerritoryKey;
+    svg+='<text x="'+cx.toFixed(1)+'" y="'+(midY-cy).toFixed(1)+'" font-size="0.8" font-weight="500" fill="'+(isMine?'#7132f5':'#777')+'" text-anchor="middle" pointer-events="none">'+key+(isMine?' ◀':'')+'</text>';
+  });
+  svg+='</svg>';
+  canvas.innerHTML=svg;
+  // Event delegation
+  canvas.onclick=function(e){ var t=e.target.closest('[data-territory]'); if(t){ drillTerritory(t.getAttribute('data-territory')); } };
+}
+
+function renderTerritoryGeo(canvas,right){
+  canvas.style.position='relative'; canvas.style.overflow='hidden';
+  var tKey=currentTerritoryKey||data.territory.replace('战区','');
+  // Map territory name to CHINA_REGIONS key (strip 战区 suffix)
+  var lookupKey=tKey.replace('战区','');
+  var tData=null;
+  Object.values(CHINA_REGIONS).forEach(function(r){
+    if(r.territories&&r.territories[lookupKey]) tData=r.territories[lookupKey];
+  });
+  if(!tData||!tData.paths.length){
+    canvas.innerHTML='<div style="padding:40px;text-align:center"><div style="font-size:28px;margin-bottom:6px">🗺️</div><div style="font-weight:700;font-size:13px;color:var(--purple)">'+tKey+'战区</div><div style="color:var(--text-muted);font-size:11px;margin-top:4px">省份矢量数据加载中...</div></div>';
+    return;
+  }
+  // Compute viewBox
+  var minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+  tData.paths.forEach(function(d){
+    var nums=(d.match(/[\d.]+/g)||[]).map(Number);
+    for(var i=0;i<nums.length;i+=2){
+      if(nums[i]<minX)minX=nums[i];if(nums[i]>maxX)maxX=nums[i];
+      if(nums[i+1]<minY)minY=nums[i+1];if(nums[i+1]>maxY)maxY=nums[i+1];
+    }
+  });
+  var padX=(maxX-minX)*0.12,padY=(maxY-minY)*0.12;
+  var midY=minY+maxY;
+  var vb=[minX-padX,minY-padY,maxX-minX+padX*2,maxY-minY+padY*2].join(' ');
+  var svg='<svg viewBox="'+vb+'" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%">';
+  svg+='<g transform="matrix(1 0 0 -1 0 '+midY+')">';
+  svg+='<rect x="'+(minX-padX)+'" y="'+(minY-padY)+'" width="'+(maxX-minX+padX*2)+'" height="'+(maxY-minY+padY*2)+'" fill="#eef1f5"/>';
+  // Neighboring territories in same region (base layer)
+  var region=CHINA_REGIONS[currentRegionKey];
+  if(!region){ Object.values(CHINA_REGIONS).forEach(function(r){ if(r.territories&&r.territories[lookupKey]) region=r; }); }
+  if(region){
+    Object.values(region.territories).forEach(function(ot){
+      ot.paths.forEach(function(d){ svg+='<path d="'+d+'" fill="#f7f8fa" stroke="none"/>'; });
     });
   }
-  overlay.appendChild(canvas);
-
-  var leg=h('div',{c:'m-legend'});
-  Object.keys(PIN_COLORS).forEach(function(k){
-    var s=PIN_COLORS[k];
-    leg.appendChild(h('div',{s:'display:flex;align-items:center;gap:5px',h:
-      '<span style="display:inline-block;width:10px;height:10px;background:'+s.bg+';border-radius:'+(k==='sales'?'50%':'2px')+'"></span>'+s.label}));
+  // Color layer: neighboring territories
+  if(region){
+    Object.keys(region.territories).forEach(function(k){
+      if(k===lookupKey) return;
+      var ot=region.territories[k];
+      ot.paths.forEach(function(d){
+        svg+='<path d="'+d+'" fill="#fafbfc" stroke="#e8ecf2" stroke-width="0.08"/>';
+      });
+    });
+  }
+  // Territory path (on top, highlighted)
+  tData.paths.forEach(function(d){
+    svg+='<path d="'+d+'" fill="#d8e8fb" stroke="#5b9cf5" stroke-width="0.08"/>';
   });
-  overlay.appendChild(leg);
+  svg+='</g>';
+  svg+='</svg>';
+  canvas.innerHTML=svg;
 
-  var sm=mapLevel==='national'?'6 个大区 · 全国 REV 均值 42% · 华东大区领先':
-    mapLevel==='region'?data.region+' · 6 个战区 · REV 达成 48% · 全国排名 1/6':
-    (role==='gm'?data.territory+' · ':'')+'Sales '+(role==='gm'?'6':'8')+'人 · 客户 24 家 · 标讯 5 条 · 竞品 3 个';
-  overlay.appendChild(h('div',{c:'m-summary',h:'📊 '+sm}));
+  // Data pins — filtered, positioned within map area (5%-90% range)
+  var pins=(data.mapPins||[]).filter(function(p){ return mapFilter==='all'||mapFilter===p.type; });
+  pins.forEach(function(p){
+    // Clamp pin positions to 5-90% to stay within map
+    var px=Math.max(8,Math.min(88,p.x));
+    var py=Math.max(8,Math.min(88,p.y));
+    var s=PIN_COLORS[p.type]||PIN_COLORS.customer;
+    var isCircle=p.type==='sales';
+    canvas.appendChild(h('div',{c:'m-pin'+(isCircle?' sales':''),
+      s:'top:'+py+'%;left:'+px+'%;background:'+s.bg+';'+(isCircle?'':'box-shadow:0 2px 8px '+s.bg+'44'),
+      h:isCircle?p.name.charAt(0):p.name,
+      oclick:function(){alert('📍 '+p.name+(p.rev?'\nREV: '+p.rev+'%':'')+(p.status==='risk'?'\n⚠️ 风险客户':'')+(p.highValue?'\n⭐ 高价值标讯':''));}}));
+  });
 }
+
+function drillRegion(key){ currentRegionKey=key; mapLevel='region'; renderMap(); }
+function drillTerritory(key){ currentTerritoryKey=key; mapLevel='territory'; renderMap(); }
 
 // ═══════ NAVIGATION ═══════
 function updateUI(){
@@ -485,6 +816,17 @@ function bindNav(){
       }
     });
   });
+}
+
+// ═══ SCENARIO ═══
+var scenario=(new URLSearchParams(window.location.search)).get('scenario')||'';
+if(scenario==='3'){
+  role='gm'; data=gD(role); mapLevel='national';
+  document.getElementById('scenarioBar').style.display='flex';
+  document.getElementById('scTag').textContent='场景三：战区总经理管理干预';
+}
+if(scenario){
+  document.querySelectorAll('.rbtn').forEach(function(b){b.classList.toggle('on',b.dataset.r===role);});
 }
 
 updateUI(); renderAll(); bindNav();

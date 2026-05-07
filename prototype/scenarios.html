@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo 场景覆盖 · 作战导航</title>
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  body { background: #fff; }
+  .page { max-width: 860px; margin: 0 auto; padding: 32px 24px; }
+  .back { display:inline-flex;align-items:center;gap:4px;color:var(--purple);text-decoration:none;font-size:13px;font-weight:600;margin-bottom:24px; }
+  .back:hover { color:var(--purple-dark); }
+  h1 { font-family:var(--font-display);font-size:26px;font-weight:700;margin-bottom:4px; }
+  .sub { color:var(--text-muted);font-size:13px;margin-bottom:28px; }
+
+  .scenario { background:#fff;border:1px solid var(--border-light);border-radius:var(--r-2xl);padding:20px;margin-bottom:16px;box-shadow:var(--shadow-sm); }
+  .scenario .sc-head { display:flex;align-items:flex-start;gap:12px;margin-bottom:12px; }
+  .scenario .sc-icon { font-size:28px;flex-shrink:0; }
+  .scenario .sc-title { font-family:var(--font-display);font-size:17px;font-weight:700; }
+  .scenario .sc-desc { font-size:12px;color:var(--text-secondary);margin-top:2px; }
+
+  .steps { margin:12px 0 0 0; }
+  .steps .step { display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-light);font-size:12px;align-items:flex-start; }
+  .steps .step:last-child { border-bottom:none; }
+  .step-num { width:24px;height:24px;border-radius:50%;background:var(--purple);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0; }
+  .step-body { flex:1; }
+  .step-body .step-text { color:var(--text);line-height:1.5; }
+  .step-body .step-agents { margin-top:3px;display:flex;gap:5px;flex-wrap:wrap; }
+  .agent-tag { display:inline-block;padding:2px 8px;border-radius:var(--r-full);font-size:10px;font-weight:600; }
+  .agent-tag.super { background:var(--purple-subtle);color:var(--purple); }
+  .agent-tag.expert { background:var(--info-subtle);color:#3d7de0; }
+  .agent-tag.coach { background:var(--success-subtle);color:var(--success-dark); }
+
+  .demo-btn-row { margin-top:12px;display:flex;gap:8px;align-items:center; }
+  .demo-btn {
+    display:inline-flex;align-items:center;gap:4px;padding:7px 16px;
+    border-radius:var(--r-xl);background:var(--purple);color:#fff;
+    text-decoration:none;font-size:12px;font-weight:600;transition:all 0.15s;
+  }
+  .demo-btn:hover { background:var(--purple-dark); }
+  .demo-btn.mb { background:var(--success); }
+  .demo-btn.mb:hover { background:var(--success-dark); }
+  .demo-hint { font-size:10px;color:var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="index.html" class="back">← 返回首页</a>
+  <h1>📋 Demo 覆盖场景</h1>
+  <p class="sub">4 个核心作战场景 · 完整操作步骤 · Agent 调用链路</p>
+
+  <!-- Scenario 1: TODAY'S VISIT PLAN -->
+  <div class="scenario">
+    <div class="sc-head">
+      <div class="sc-icon">🌅</div>
+      <div>
+        <div class="sc-title">场景一：今日拜访计划导航</div>
+        <div class="sc-desc">每日启动 → 目标概览 → 差距诊断 → 路径建议 → 自动生成今日拜访计划，一站式完成战前准备</div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-text">打开销售智能体，超级助理加载作战导航默认视图，主动推送今日作战概览：目标达成率、排名、关键差距</div>
+          <div class="step-agents"><span class="agent-tag super">🤖 超级助理</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-text">查看经营目标全景（REV/CA/竞争力指标）和战略任务进度，了解当日待拜访客户列表及沟通要点</div>
+          <div class="step-agents"><span class="agent-tag expert">📊 作战跟进</span><span class="agent-tag expert">⚡ 作战执行</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-text">聚焦「差距 & 路径建议」：AI 诊断根因（某云计算科技未覆盖、某大数据中心商机停滞），生成最优达成路径</div>
+          <div class="step-agents"><span class="agent-tag super">🤖 超级助理</span><span class="agent-tag expert">📊 作战跟进</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-text">一键点击「生成拜访计划」→ 超级助理分派给作战计划 Agent，自动生成当日/本周重点拜访日程，同步到行动提醒</div>
+          <div class="step-agents"><span class="agent-tag super">🤖 超级助理</span><span class="agent-tag expert">📋 作战计划</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-text">一键点击「获取拜访资料」→ 超级助理调用洞察 Agent，拉取目标客户 360 画像和拜访沟通资料包</div>
+          <div class="step-agents"><span class="agent-tag super">🤖 超级助理</span><span class="agent-tag expert">🔍 销售洞察</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="demo-btn-row">
+      <a class="demo-btn mb" href="mobile.html?role=ar&scenario=1" target="_blank">▶ 演示此场景</a>
+      <span class="demo-hint">Mobile 端 · Agent 自动推送 → 自动生成拜访计划 · 约 8 秒</span>
+    </div>
+  </div>
+
+  <!-- Scenario 2: BID → OPPORTUNITY -->
+  <div class="scenario">
+    <div class="sc-head">
+      <div class="sc-icon">📡</div>
+      <div>
+        <div class="sc-title">场景二：标讯洞察 → 商机转化</div>
+        <div class="sc-desc">洞察Agent 主动推送高价值标讯 → AR 分析判断意向 → 引导创建商机 → 生成高层级客户拜访沟通资料</div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-text">洞察 Agent 主动推送匹配 AR 行业的高价值标讯：「通用服务器框架采购」「分布式存储扩容」等，作战导航 Feed 标红提醒</div>
+          <div class="step-agents"><span class="agent-tag expert">🔍 销售洞察</span><span class="agent-tag super">🤖 超级助理</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-text">AR 点击标讯查看详情：采购单位、预算金额、截止日期、技术规格要求、历史中标情况，AI 提供匹配度分析</div>
+          <div class="step-agents"><span class="agent-tag expert">🔍 销售洞察</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-text">AR 判断为「意向」标讯 → 系统引导填写意向判断依据 → 一键触发「创建商机」，自动填充商机信息</div>
+          <div class="step-agents"><span class="agent-tag expert">⚡ 作战执行</span><span class="agent-tag super">🤖 超级助理</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-text">超级助理调用洞察 Agent 自动生成高层级客户拜访沟通资料：客户背景、采购需求摘要、推荐方案要点、竞品分析</div>
+          <div class="step-agents"><span class="agent-tag super">🤖 超级助理</span><span class="agent-tag expert">🔍 销售洞察</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-text">资料同步到行动提醒和拜访准备，AR 可一键导出或直接用于客户拜访沟通</div>
+          <div class="step-agents"><span class="agent-tag expert">📋 作战计划</span><span class="agent-tag super">🤖 超级助理</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="demo-btn-row">
+      <a class="demo-btn mb" href="mobile.html?role=ar&scenario=2" target="_blank">▶ 演示此场景</a>
+      <span class="demo-hint">Mobile 端 · 标讯推送 → 创建商机 → 生成沟通资料 · 约 10 秒</span>
+    </div>
+  </div>
+
+  <!-- Scenario 3 -->
+  <div class="scenario">
+    <div class="sc-head">
+      <div class="sc-icon">👔</div>
+      <div>
+        <div class="sc-title">场景三：战区总经理管理干预</div>
+        <div class="sc-desc">发现团队成员落后 → 下钻个人视图 → AI 管理建议 → 执行管理动作</div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-text">作战导航「成员达成率排名」面板显示王五 REV 28%、钱七拜访仅达标 40%，标红预警</div>
+          <div class="step-agents"><span class="agent-tag expert">📊 作战跟进</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-text">点击「下钻」→ 进入该成员的 AR Sales 个人作战导航视图，查看详细目标、客户、任务数据</div>
+          <div class="step-agents"><span class="agent-tag super">🤖 超级助理</span><span class="agent-tag expert">📊 作战跟进</span><span class="agent-tag expert">⚡ 作战执行</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-text">AI 生成管理行动建议：绩效面谈（王五）、过程抽检（钱七）、新人带教（赵六）</div>
+          <div class="step-agents"><span class="agent-tag super">🤖 超级助理</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-text">一键点击「安排面谈」→ 日程自动添加王五绩效面谈，同步到行动提醒</div>
+          <div class="step-agents"><span class="agent-tag super">🤖 超级助理</span><span class="agent-tag expert">📋 作战计划</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-text">一键点击「过程抽检」→ 进入钱七拜访记录，查看拜访质量和频次，标记抽检结果</div>
+          <div class="step-agents"><span class="agent-tag expert">⚡ 作战执行</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="demo-btn-row">
+      <a class="demo-btn" href="pc.html?scenario=3" target="_blank">▶ 演示此场景</a>
+      <span class="demo-hint">PC 端 · GM 视角成员排名 · 管理干预</span>
+    </div>
+  </div>
+
+  <!-- Scenario 4 -->
+  <div class="scenario">
+    <div class="sc-head">
+      <div class="sc-icon">🎓</div>
+      <div>
+        <div class="sc-title">场景四：教练闭环 — 优秀案例沉淀 + 问题辅导</div>
+        <div class="sc-desc">优秀执行自动沉淀为案例库，遇到问题触发分级辅导响应</div>
+      </div>
+    </div>
+    <div style="font-weight:700;font-size:13px;color:var(--success);margin:12px 0 8px">🏆 优秀案例沉淀</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-text">Sales 完成拜访并填报，AI 自动基于转化效率、客户反馈、方法独特性判定为优秀案例</div>
+          <div class="step-agents"><span class="agent-tag expert">⚡ 作战执行</span><span class="agent-tag coach">🎓 销售教练</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-text">作战导航展示通知："拜访某银行总行被评为优秀案例"</div>
+          <div class="step-agents"><span class="agent-tag super">🤖 超级助理</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-text">教练 Agent 结构化沉淀案例：场景 → 方法 → 关键动作 → 结果，入库可检索</div>
+          <div class="step-agents"><span class="agent-tag coach">🎓 销售教练</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-text">同类场景自动推荐案例、新人培训素材引用、团队最佳实践库更新</div>
+          <div class="step-agents"><span class="agent-tag coach">🎓 销售教练</span><span class="agent-tag super">🤖 超级助理</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-weight:700;font-size:13px;color:var(--danger);margin:16px 0 8px">🆘 问题辅导</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-text">作战导航差距分析发现执行遇阻 / 指标落后，或 Sales 在对话中主动求助</div>
+          <div class="step-agents"><span class="agent-tag super">🤖 超级助理</span><span class="agent-tag expert">📊 作战跟进</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-text">教练 Agent 诊断问题类型，检索知识库和相似优秀案例</div>
+          <div class="step-agents"><span class="agent-tag coach">🎓 销售教练</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-text">分级响应：轻度 → 推送指导建议卡片；中度 → 触发知识问答/专题培训；重度 → 触发 1 对 1 模拟陪练</div>
+          <div class="step-agents"><span class="agent-tag coach">🎓 销售教练</span><span class="agent-tag super">🤖 超级助理</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-text">作战导航呈现辅导建议，用户确认后启动对应辅导模式</div>
+          <div class="step-agents"><span class="agent-tag super">🤖 超级助理</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-text">辅导后持续追踪指标改善，验证教练效果，纳入该 Sales 成长档案</div>
+          <div class="step-agents"><span class="agent-tag coach">🎓 销售教练</span><span class="agent-tag expert">📊 作战跟进</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="demo-btn-row">
+      <a class="demo-btn mb" href="mobile.html?role=ar&scenario=4" target="_blank">▶ 演示此场景</a>
+      <span class="demo-hint">Mobile 端 · 自动触发教练建议 → 案例展示 · 约 8 秒</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

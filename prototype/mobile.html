@@ -82,6 +82,16 @@
   .qb .qi { font-size:14px; }
 
   @keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+  /* Scenario bar */
+  .scenario-bar {
+    display:flex; align-items:center; gap:8px; padding:6px 14px;
+    background:var(--purple-light); border-bottom:1px solid var(--purple-subtle);
+    font-size:11px; flex-shrink:0;
+  }
+  .scenario-bar a { color:var(--purple); text-decoration:none; font-weight:600; }
+  .scenario-bar .sc-tag { background:var(--purple);color:#fff;padding:2px 8px;border-radius:var(--r-full);font-size:9px;font-weight:700; }
+  .scenario-bar .sc-step { color:var(--text-muted);font-size:10px;margin-left:auto; }
 </style>
 </head>
 <body>
@@ -91,6 +101,11 @@
     <div class="info"><div class="name">销售智能体</div><div class="sub" id="stitle"></div></div>
     <button class="rt" id="rtoggle">切换角色</button>
   </header>
+  <div class="scenario-bar" id="scenarioBar" style="display:none">
+    <a href="scenarios.html">← 返回场景汇总</a>
+    <span class="sc-tag" id="scTag"></span>
+    <span class="sc-step" id="scStep"></span>
+  </div>
   <main class="chat" id="chat"></main>
   <div class="input-bar">
     <button class="voice-btn" id="voiceBtn" title="语音输入">🎤</button>
@@ -113,18 +128,18 @@ function fmK(n){return '¥'+(n/10).toFixed(0)+'万';}
 function fmP(a,t){return Math.round(a/t*100)+'%';}
 function fmV(v){return v+'%';}
 
-var AR={name:'张三',role:'ar',region:'华东大区',territory:'上海战区',industries:['金融'],
-  targets:{rev:{target:2800,achieved:1064,rank:'5/12'},ca:{target:1700,achieved:884,rank:'3/12'},compA:{target:100,achieved:65,rank:'6/12'},compB:{target:100,achieved:80,rank:'2/12'}},
-  strategicTasks:[{label:'高价值客户经营',done:3,total:6},{label:'海光战核客户经营',done:2,total:4},{label:'重点战役',done:1,total:3},{label:'客户拜访',done:12,total:20}],
-  bids:{intended:[{name:'某银行核心系统采购项目',amount:800,deadline:dL(6),highValue:true},{name:'某证券数据平台建设',amount:500,deadline:dL(19),highValue:true},{name:'某保险灾备项目',amount:300,deadline:dL(26),highValue:false}],public:[{name:'某医院HIS系统招标',amount:400,deadline:dL(0),highValue:true,status:'reported'},{name:'某高校信息化平台',amount:200,deadline:dL(9),highValue:false,status:'pending'},{name:'某政府部门安全项目',amount:350,deadline:dL(14),highValue:false,status:'pending'}]},
-  mapPins:[{type:'sales',name:'张三',rev:65,x:62,y:28},{type:'customer',name:'某银行总行',status:'good',x:58,y:22},{type:'customer',name:'某保险公司',status:'risk',x:45,y:62},{type:'bid',name:'某医院招标',highValue:true,x:70,y:45},{type:'competitor',name:'竞品X',x:40,y:18}]
+var AR={name:'张三',role:'ar',region:'东南大区',territory:'浙江战区',industries:['企业级IT'],
+  targets:{rev:{target:3500,achieved:1470,rank:'3/10'},ca:{target:2200,achieved:1210,rank:'3/10'},compA:{target:100,achieved:78,rank:'4/10'},compB:{target:100,achieved:82,rank:'3/10'}},
+  strategicTasks:[{label:'高价值客户经营',done:2,total:6},{label:'海光战核客户经营',done:2,total:4},{label:'重点战役',done:1,total:3},{label:'客户拜访',done:10,total:20}],
+  bids:{intended:[{name:'通用服务器框架采购',amount:1200,deadline:dL(5),highValue:true},{name:'分布式存储扩容项目',amount:900,deadline:dL(12),highValue:true},{name:'数据中心解决方案招标',amount:600,deadline:dL(20),highValue:false}],public:[{name:'私有云平台建设项目',amount:1500,deadline:dL(3),highValue:true,status:'pending'},{name:'AI算力集群采购',amount:800,deadline:dL(8),highValue:true,status:'pending'},{name:'政务云安全加固项目',amount:400,deadline:dL(15),highValue:false,status:'reported'}]},
+  mapPins:[{type:'sales',name:'张三',rev:40,x:62,y:28},{type:'customer',name:'某云计算科技',status:'good',x:58,y:22},{type:'customer',name:'某大数据中心',status:'risk',x:45,y:62},{type:'bid',name:'私有云平台建设',highValue:true,x:70,y:45},{type:'competitor',name:'竞品H公司',x:40,y:18}]
 };
 
-var GM={name:'王指挥',role:'gm',region:'华东大区',territory:'浙江战区',industries:['金融','制造'],
-  targets:{rev:{target:18000,achieved:7560,rank:'1/6'},ca:{target:12000,achieved:6600,rank:'2/6'}},
-  strategicTasks:[{label:'高价值客户经营',done:18,total:30},{label:'海光战核客户经营',done:14,total:24},{label:'重点战役',done:8,total:18},{label:'客户拜访',done:85,total:120}],
-  bids:{intended:[{name:'某银行核心系统采购项目',amount:800,deadline:dL(6),highValue:true},{name:'某制造企业ERP项目',amount:600,deadline:dL(10),highValue:true}],public:[{name:'某国企云平台项目',amount:600,deadline:dL(5),highValue:true,status:'pending'},{name:'某医院HIS系统招标',amount:400,deadline:dL(0),highValue:true,status:'reported'}]},
-  mapPins:[{type:'sales',name:'张三',rev:65,x:55,y:20},{type:'sales',name:'王五',rev:28,x:48,y:62},{type:'customer',name:'客户B',status:'risk',x:25,y:60},{type:'bid',name:'标讯X',highValue:true,x:75,y:40}]
+var GM={name:'王指挥',role:'gm',region:'东南大区',territory:'浙江战区',industries:['企业级IT','制造'],
+  targets:{rev:{target:18000,achieved:7560,rank:'2/8'},ca:{target:13000,achieved:7150,rank:'2/8'}},
+  strategicTasks:[{label:'高价值客户经营',done:16,total:30},{label:'海光战核客户经营',done:14,total:24},{label:'重点战役',done:9,total:18},{label:'客户拜访',done:78,total:120}],
+  bids:{intended:[{name:'通用服务器框架采购',amount:1200,deadline:dL(5),highValue:true},{name:'智能制造MES平台',amount:700,deadline:dL(10),highValue:true}],public:[{name:'私有云平台建设项目',amount:1500,deadline:dL(3),highValue:true,status:'pending'},{name:'AI算力集群采购',amount:800,deadline:dL(8),highValue:true,status:'pending'}]},
+  mapPins:[{type:'sales',name:'张三',rev:40,x:55,y:20},{type:'sales',name:'王五',rev:28,x:48,y:62},{type:'customer',name:'某大数据中心',status:'risk',x:25,y:60},{type:'bid',name:'私有云平台',highValue:true,x:75,y:40}]
 };
 function gD(r){return r==='gm'?GM:AR;}
 
@@ -136,18 +151,25 @@ function addUser(t){var c=document.getElementById('chat');var d=document.createE
 function addCard(h){var c=document.getElementById('chat');var d=document.createElement('div');d.className='card-c';d.innerHTML=h;c.appendChild(d);c.scrollTop=c.scrollHeight;}
 
 function runGreeting(){
-  setTimeout(function(){addMsg('早上好！☀️<br>你的今日作战概览已就绪。');},400);
+  setTimeout(function(){addMsg('早上好！☀️<br>你的今日作战概览已就绪。今日有 <b>3 个待拜访客户</b>，已为你准备好拜访导航。');},400);
   setTimeout(pushMetrics,1200);
   if(role==='ar'){
-    setTimeout(function(){addMsg('你有 <b style="color:var(--danger)">2 个差距</b>需关注：REV 达成落后，高价值客户缺口 3 家。');},2000);
+    setTimeout(function(){addMsg('你有 <b style="color:var(--danger)">2 个差距</b>需关注：REV 达成 40%，某云计算科技未覆盖、某大数据中心商机停滞。');},2000);
     setTimeout(pushGap,3000);
-    setTimeout(function(){addMsg('建议优先跟进海光战核客户A，预计可贡献 ¥20万。<br>需要我帮你生成拜访计划吗？');},4200);
+    setTimeout(function(){addMsg('建议今日重点拜访某云计算科技，预计可贡献 ¥32万。<br>需要我帮你生成今日拜访计划吗？');},4200);
+    // Auto-play scenario
+    if(scenario==='1'){ setTimeout(function(){ updateScStep('自动触发：生成今日拜访计划'); hAct('帮我生成拜访计划'); },5200); }
+    if(scenario==='2'){ setTimeout(function(){ updateScStep('自动触发：标讯推送 → 创建商机 → 生成沟通资料'); },3000); setTimeout(function(){ hAct('查看最新标讯'); },3500); }
+    if(scenario==='4'){ setTimeout(function(){ updateScStep('自动触发：教练建议 → 案例展示 → 模拟陪练'); hAct('看看教练建议'); },5200); }
   } else {
     setTimeout(function(){addMsg('⚠️ <b style="color:var(--danger)">王五、钱七</b>达成率持续落后，需要管理干预。');},2000);
     setTimeout(pushGap,3000);
     setTimeout(function(){addMsg('已为你列出管理建议：绩效面谈、过程抽检、新人带教。<br>需要我帮你安排吗？');},4200);
+    if(scenario==='3'){ setTimeout(function(){ updateScStep('自动触发：安排管理动作'); hAct('帮我安排管理动作'); },5200); }
   }
 }
+
+function updateScStep(t){ var el=document.getElementById('scStep'); if(el) el.textContent='▶ '+t; }
 
 function pushMetrics(){
   var t=data.targets;
@@ -205,8 +227,8 @@ function mt(l,v,c){return '<div style="background:var(--bg);border-radius:6px;pa
 function pushGap(){
   if(role==='ar'){
     addCard('<div style="font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:6px">🔍 差距 & 路径建议</div>'+
-      '<div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px">⚠ REV 差距 ¥12万 · 高价值客户缺口 3 家</div>'+
-      '<div style="font-size:11px;color:var(--purple);font-weight:600;margin-bottom:8px">→ 最优路径：客户A ¥20万 → 标讯某银行 ¥80万</div>'+
+      '<div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px">⚠ REV 差距 ¥19万 · 某云计算科技未覆盖 · 某大数据中心商机停滞</div>'+
+      '<div style="font-size:11px;color:var(--purple);font-weight:600;margin-bottom:8px">→ 最优路径：某云计算科技 ¥32万 → 通用服务器标讯 ¥120万</div>'+
       '<button class="btn btn-p btn-xs" onclick="hAct(\'帮我生成拜访计划\')">📋 生成拜访计划</button> '+
       '<button class="btn btn-sub btn-xs" onclick="hAct(\'看看教练建议\')">🎓 教练建议</button>');
   } else {
@@ -221,19 +243,141 @@ function pushGap(){
 function hAct(t){
   addUser(t);
   setTimeout(function(){
-    if(t.indexOf('拜访计划')>=0){addMsg('收到。正在调用 <b>作战计划Agent</b>...');setTimeout(function(){addMsg('✅ 已生成本周重点拜访计划：<br><br>📅 <b>周二</b> 某银行总行 — 方案演示<br>📅 <b>周三</b> 某证券公司 — 商务谈判<br>📅 <b>周四</b> 某保险公司 — 回款跟进<br><br>已同步到你的日程。');},1200);}
-    else if(t.indexOf('教练')>=0){addMsg('🎓 <b>教练Agent</b> 诊断中...');setTimeout(function(){addMsg('你在<b>客户异议处理</b>方面存在提升空间。王五在类似场景下被评为优秀案例，建议先学习再模拟陪练。');},1200);setTimeout(function(){addCard('<div style="font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:4px;color:var(--success)">🏆 优秀案例：客户异议处理</div><div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px">王五在拜访某制造企业时，成功化解客户预算异议，最终签单 ¥50万。</div><div style="font-size:11px;margin-bottom:6px">核心方法：<b>先共情理解 → 数据化价值说服 → 提供替代方案</b></div><button class="btn btn-p btn-xs" onclick="hAct(\'开始模拟陪练\')">🎓 开始模拟陪练</button>');},2400);}
+    if(t.indexOf('拜访计划')>=0){addMsg('收到。正在调用 <b>作战计划Agent</b>...');setTimeout(function(){addMsg('✅ 已生成今日拜访计划：<br><br>📅 <b>上午 10:00</b> 某云计算科技 — 服务器方案演示<br>📅 <b>下午 14:00</b> 某大数据中心 — 存储扩容沟通<br>📅 <b>本周四</b> 某互联网集团 — 解决方案高层交流<br><br>已同步到你的日程和行动提醒。');},1200);}
+    else if(t.indexOf('教练')>=0){addMsg('🎓 <b>教练Agent</b> 诊断中...');setTimeout(function(){addMsg('你在<b>客户异议处理</b>方面存在提升空间。王五在类似场景下被评为优秀案例，建议先学习再模拟陪练。');},1200);setTimeout(function(){addCard('<div style="font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:4px;color:var(--success)">🏆 优秀案例：客户异议处理</div><div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px">王五在拜访某云计算科技时，成功化解客户对服务器方案的预算异议，最终签单 ¥32万。</div><div style="font-size:11px;margin-bottom:6px">核心方法：<b>先共情理解 → 数据化价值说服 → 提供替代方案</b></div><button class="btn btn-p btn-xs" onclick="hAct(\'开始模拟陪练\')">🎓 开始模拟陪练</button>');},2400);}
     else if(t.indexOf('陪练')>=0){addMsg('启动模拟陪练场景：客户预算异议处理...<br><br>🎯 目标：在客户提出预算不足时，引导转向价值讨论。<br>📝 3轮对话模拟已就绪，随时可以开始。');}
     else if(t.indexOf('管理动作')>=0){addMsg('收到。正在为你安排管理动作...');setTimeout(function(){addMsg('✅ 已添加 <b>王五绩效面谈</b> 到本周四 10:30<br>✅ 已标记 <b>钱七拜访记录</b> 待抽检<br>✅ 已通知 <b>孙八</b> 负责赵六新人带教');},1200);}
     else if(t.indexOf('地图')>=0){var ps=data.mapPins||[];addCard('<div style="font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:6px">🗺️ '+data.territory+' 作战态势</div><div style="background:var(--bg);border-radius:var(--r-lg);padding:14px;text-align:center;border:1px solid var(--border-light);margin-bottom:6px"><div style="font-size:32px;margin-bottom:6px">🗺️</div><div style="font-size:11px;color:var(--text-secondary)">Sales '+(role==='gm'?'6':'8')+'人 · 客户 24 家 · 标讯 5 条 · 竞品 3 个</div><div style="font-size:10px;color:var(--text-muted);margin-top:2px">'+ps.filter(function(p){return p.status==='risk';}).length+' 个风险 · '+ps.filter(function(p){return p.highValue;}).length+' 条高价值标讯</div></div>'+(role==='gm'?'<div style="font-size:10px;color:var(--purple)">点击可下钻查看战区详情 →</div>':''));}
+    else if(t.indexOf('最新标讯')>=0){runBidToOppFlow();}
     else if(t.indexOf('标讯')>=0){var b=data.bids;var all=[];b.intended.forEach(function(x){x._t='意向';all.push(x);});b.public.forEach(function(x){x._t='公开';all.push(x);});all.sort(function(a,b){if(a.highValue&&!b.highValue)return -1;if(!a.highValue&&b.highValue)return 1;return new Date(a.deadline)-new Date(b.deadline);});var h='<div style="font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:8px">📡 标讯看板</div>';all.forEach(function(x){var tt=x._t==='意向'?'<span style="display:inline-block;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:600;background:var(--purple-subtle);color:var(--purple);margin-right:4px">意向</span>':'<span style="display:inline-block;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:600;background:var(--warning-subtle);color:#b0780e;margin-right:4px">公开</span>';var ht=x.highValue?' <span class="badge badge-high">高价值</span>':'';h+='<div style="font-size:11px;padding:5px 0;border-bottom:1px solid var(--border-light);display:flex;align-items:center;gap:4px"><span style="flex:1">'+tt+ht+' '+x.name+'</span><span class="mono" style="font-size:9px;color:var(--text-muted)">'+fmK(x.amount)+' · '+x.deadline+'</span></div>';});addCard(h);}
     else {addMsg('好的，我来帮你处理。「'+t+'」功能原型已展示核心交互流程。');}
   },500);
 }
 
+// ═══ SCENARIO 2: 标讯→商机 FLOW ═══
+function runBidToOppFlow(){
+  addMsg('🔍 <b>洞察Agent</b> 为你匹配到 2 条高价值标讯，与你负责的企业级IT行业高度相关：');
+  setTimeout(function(){
+    addCard('<div style="font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:6px">📡 洞察Agent · 标讯推送</div>'+
+      '<div style="font-size:10px;color:var(--text-muted);margin-bottom:8px">基于你的行业（企业级IT）和战区（上海），自动匹配以下标讯</div>'+
+      '<div style="background:var(--purple-light);border-radius:8px;padding:10px;margin-bottom:6px">'+
+      '<span class="badge badge-high">高价值</span> <b>私有云平台建设项目</b><br>'+
+      '<div style="font-size:10px;color:var(--text-secondary);margin-top:3px">¥150万 · '+dL(3)+'截止 · 某政府信息中心<br>需求：通用服务器、分布式存储、云平台软件</div></div>'+
+      '<div style="background:var(--purple-light);border-radius:8px;padding:10px;margin-bottom:8px">'+
+      '<span class="badge badge-high">高价值</span> <b>AI算力集群采购</b><br>'+
+      '<div style="font-size:10px;color:var(--text-secondary);margin-top:3px">¥80万 · '+dL(8)+'截止 · 某互联网集团<br>需求：GPU服务器、高速存储、网络互联</div></div>'+
+      '<button class="btn btn-p btn-xs" onclick="hAct(\'分析标讯并创建商机\')">📡 分析标讯详情</button>');
+  },1000);
+
+  setTimeout(function(){
+    updateScStep('▶ 分析标讯 → 判断意向 → 创建商机');
+  },2000);
+}
+
+// Add handler for the bid→opp creation step
+(function(){
+  var origHAct = hAct;
+  hAct = function(t){
+    if(t.indexOf('分析标讯并创建商机')>=0){
+      addUser(t);
+      setTimeout(function(){
+        addMsg('正在分析标讯匹配度和竞争态势...');
+        setTimeout(function(){
+          addCard('<div style="font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:6px">📊 标讯匹配分析</div>'+
+            '<div style="font-size:10px;color:var(--text-secondary);margin-bottom:6px"><b>私有云平台建设项目</b> — 匹配度 <span style="color:var(--success);font-weight:700">87%</span></div>'+
+            '<div style="font-size:10px;color:var(--text-muted);margin-bottom:4px">✅ 服务器、存储、云平台均在你的产品范围<br>✅ 该单位去年采购过你司设备<br>⚠ 竞品H公司已介入，需尽快行动</div>'+
+            '<div style="font-size:11px;font-weight:600;margin:8px 0 4px">💡 AI 建议：标记为<b>意向</b>标讯，立即创建商机抢占先机</div>'+
+            '<div style="font-size:11px;font-weight:600;margin:8px 0 6px">📋 请选择处理方式：</div>'+
+            '<button class="btn btn-p btn-xs" onclick="hAct(\'确认创建商机\')" style="margin:3px">✅ 确认创建商机</button>'+
+            '<button class="btn btn-o btn-xs" onclick="hAct(\'已经提报商机\')" style="margin:3px">📎 已经提报商机</button>'+
+            '<button class="btn btn-g btn-xs" onclick="hAct(\'无法跟进\')" style="margin:3px">⊘ 无法跟进</button>');
+          updateScStep('▶ 分析完成 → 选择处理方式');
+        },1200);
+      },500);
+      return;
+    }
+    if(t.indexOf('确认创建商机')>=0){
+      addUser(t);
+      setTimeout(function(){
+        addMsg('✅ 商机已创建！<br><br>📋 <b>商机名称：</b>私有云平台建设项目<br>💰 <b>预计金额：</b>¥150万<br>📅 <b>预计签约：</b>Q3<br>🏷️ <b>来源：</b>标讯转化<br><br>正在生成高层级客户拜访沟通资料...');
+        updateScStep('▶ 商机已创建 → 生成沟通资料');
+        setTimeout(function(){
+          addCard('<div style="font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:6px">📁 客户拜访沟通资料 · High-Level Brief</div>'+
+            '<div style="font-size:10px;line-height:1.6;color:var(--text-secondary)">'+
+            '<b>🏢 客户背景：</b>某政府信息中心，负责全市政务信息化建设<br>'+
+            '<b>📋 采购需求：</b>通用服务器 20 台、分布式存储 500TB、云平台软件 1 套<br>'+
+            '<b>🎯 推荐方案：</b>基于鲲鹏架构的私有云全栈方案（服务器 + 存储 + 软件）<br>'+
+            '<b>⚔️ 竞品态势：</b>竞品H公司已提交初步方案，我方需突出国产化生态和本地服务优势<br>'+
+            '<b>📝 沟通要点：</b>1) 强调国产化替代政策契合度 2) TCO 3 年对比分析 3) 本地化运维团队 7x24 响应</div>'+
+            '<div style="margin-top:8px;font-size:10px;color:var(--success)">✅ 已同步到行动提醒 · 可一键导出 PDF</div>');
+          updateScStep('▶ 完成：沟通资料已生成');
+        },1500);
+      },500);
+      return;
+    }
+    if(t.indexOf('已经提报商机')>=0){
+      addUser(t);
+      setTimeout(function(){
+        addMsg('📎 请关联已提报的商机编号：<br><br>系统检索到你可能关联的商机：<br>🔹 <b>OP-2026-0042</b> — 政务云基础设施项目 · ¥120万<br>🔹 <b>OP-2026-0078</b> — 某政府信息中心IT改造 · ¥90万<br><br>请确认关联的商机编号，或输入新编号。');
+        addCard('<div style="font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:6px">📎 关联商机确认</div>'+
+          '<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">已将标讯「私有云平台建设项目」关联到已有商机</div>'+
+          '<div style="display:flex;gap:6px">'+
+          '<button class="btn btn-p btn-xs" onclick="hAct(\'确认关联 OP-2026-0042\')" style="margin:3px">✅ 关联 OP-2026-0042</button>'+
+          '<button class="btn btn-o btn-xs" onclick="hAct(\'确认关联 OP-2026-0078\')" style="margin:3px">✅ 关联 OP-2026-0078</button></div>');
+        updateScStep('▶ 标讯已关联已有商机');
+      },500);
+      return;
+    }
+    if(t.indexOf('确认关联')>=0){
+      addUser(t);
+      setTimeout(function(){
+        addMsg('✅ 标讯已成功关联到已有商机！无需重复创建，该标讯将作为商机跟进参考。<br><br>已同步更新商机跟进记录。');
+        updateScStep('▶ 完成：标讯关联已有商机');
+      },500);
+      return;
+    }
+    if(t.indexOf('无法跟进')>=0){
+      addUser(t);
+      setTimeout(function(){
+        addMsg('请说明无法跟进的原因，系统将记录并归档：');
+        addCard('<div style="font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:6px">⊘ 无法跟进 · 原因说明</div>'+
+          '<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">请选择或填写具体原因：</div>'+
+          '<button class="btn btn-g btn-xs" onclick="hAct(\'原因：产品不匹配\')" style="margin:2px">产品不匹配</button> '+
+          '<button class="btn btn-g btn-xs" onclick="hAct(\'原因：竞争过于激烈\')" style="margin:2px">竞争过于激烈</button> '+
+          '<button class="btn btn-g btn-xs" onclick="hAct(\'原因：预算不足\')" style="margin:2px">预算不足</button> '+
+          '<button class="btn btn-g btn-xs" onclick="hAct(\'原因：不在负责区域\')" style="margin:2px">不在负责区域</button> '+
+          '<button class="btn btn-g btn-xs" onclick="hAct(\'原因：项目已取消\')" style="margin:2px">项目已取消</button>');
+        updateScStep('▶ 等待反馈原因...');
+      },500);
+      return;
+    }
+    if(t.indexOf('原因：')>=0){
+      addUser(t);
+      setTimeout(function(){
+        var reason=t.replace('原因：','');
+        addMsg('✅ 已记录反馈：<b>'+reason+'</b><br><br>该标讯已归档，不再出现在你的待处理列表中。如需重新激活，可在标讯归档中查找。');
+        updateScStep('▶ 完成：标讯已归档（'+reason+'）');
+      },500);
+      return;
+    }
+    origHAct(t);
+  };
+})();
+
 function updateUI(){document.getElementById('stitle').textContent=role==='gm'?'作战导航 · '+data.territory+'（管辖）':'作战导航 · '+data.territory;}
 document.getElementById('rtoggle').addEventListener('click',function(){role=role==='ar'?'gm':'ar';data=gD(role);updateUI();document.getElementById('chat').innerHTML='';addMsg('已切换到 <b>'+(role==='gm'?'战区总经理':'AR Sales')+'</b> 视角');setTimeout(runGreeting,600);});
 document.querySelectorAll('.qb button').forEach(function(b){b.addEventListener('click',function(){var a=this.dataset.a;var m={dashboard:'展开作战看板',map:'看看地图',bid:'查看标讯',coach:'教练建议',visit:'我要报拜访'};if(m[a]) hAct(m[a]);});});
+
+// ═══ SCENARIO ═══
+var scenario=(new URLSearchParams(window.location.search)).get('scenario')||'';
+if(scenario){
+  document.getElementById('scenarioBar').style.display='flex';
+  var scNames={1:'场景一：今日拜访计划导航',2:'场景二：标讯洞察 → 商机转化',3:'场景三：战区总经理管理干预',4:'场景四：教练闭环'};
+  document.getElementById('scTag').textContent=scNames[scenario]||'';
+  document.getElementById('scStep').textContent='▶ 演示准备中...';
+  if(scenario==='3') role='gm'; // Scenario 3 uses GM view
+  data=gD(role); updateUI();
+}
 
 // ═══ INPUT BAR ═══
 var input=document.getElementById('msgInput');

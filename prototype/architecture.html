@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>产品能力架构 · 销售智能体</title>
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  body { background: #fff; }
+  .page { max-width: 860px; margin: 0 auto; padding: 32px 24px; }
+  .back { display:inline-flex;align-items:center;gap:4px;color:var(--purple);text-decoration:none;font-size:13px;font-weight:600;margin-bottom:24px; }
+  .back:hover { color:var(--purple-dark); }
+  h1 { font-family:var(--font-display);font-size:26px;font-weight:700;margin-bottom:4px; }
+  h2 { font-family:var(--font-display);font-size:18px;font-weight:700;margin:28px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--purple); }
+  h3 { font-size:15px;font-weight:700;margin:18px 0 8px;color:var(--purple-dark); }
+  .sub { color:var(--text-muted);font-size:13px;margin-bottom:24px; }
+  p { font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:10px; }
+
+  /* Arch diagram */
+  .arch { background:var(--bg);border-radius:var(--r-2xl);padding:24px;margin:16px 0;border:1px solid var(--border-light);text-align:center; }
+  .arch-row { display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:8px; }
+  .arch-box { background:#fff;border:1px solid var(--border-light);border-radius:var(--r-lg);padding:14px 16px;text-align:center;min-width:115px;box-shadow:var(--shadow-sm); }
+  .arch-box.super { border-color:var(--purple);background:var(--purple-light);min-width:220px; }
+  .arch-box .ab-name { font-weight:700;font-size:13px; }
+  .arch-box .ab-desc { font-size:10px;color:var(--text-muted);margin-top:3px;line-height:1.4; }
+  .arch-arrow { color:var(--text-muted);font-size:14px;font-weight:600;margin:6px 0; }
+
+  /* Table */
+  .ft { width:100%;border-collapse:collapse;font-size:12px;margin:12px 0; }
+  .ft th { background:var(--bg);padding:10px 12px;text-align:left;font-weight:700;font-size:11px;color:var(--text-secondary);border-bottom:2px solid var(--border); }
+  .ft td { padding:10px 12px;border-bottom:1px solid var(--border-light);color:var(--text-secondary);vertical-align:top; }
+  .ft td:first-child { font-weight:600;color:var(--text);white-space:nowrap; }
+
+  /* Capability cards */
+  .caps { display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:12px 0; }
+  .cap { background:#fff;border:1px solid var(--border-light);border-radius:var(--r-xl);padding:16px;box-shadow:var(--shadow-sm); }
+  .cap .ca-icon { font-size:24px;margin-bottom:6px; }
+  .cap .ca-title { font-weight:700;font-size:13px;margin-bottom:4px; }
+  .cap .ca-desc { font-size:11px;color:var(--text-muted);line-height:1.6; }
+
+  .tag { display:inline-block;padding:3px 10px;border-radius:var(--r-full);font-size:10px;font-weight:600;margin-right:4px; }
+  .tag-p { background:var(--purple-subtle);color:var(--purple); }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="index.html" class="back">← 返回首页</a>
+  <h1>🏗️ 销售智能体 · 产品能力架构</h1>
+  <p class="sub">1 个超级助理 + 5 个领域专家 Agent · 全旅程赋能销售团队</p>
+
+  <!-- Arch Diagram -->
+  <h2>Agent 架构总览</h2>
+  <p>销售智能体采用 <b>1 + N</b> Agent 协同架构。超级助理作为唯一用户入口，负责意图理解和任务分派；5 个领域专家 Agent 各司其职，被超级助理调度协作。作战导航是超级助理的核心功能视图（非独立 Agent），聚合各专家 Agent 数据，以指挥舱形态呈现。</p>
+
+  <div class="arch">
+    <div class="arch-row">
+      <div class="arch-box super">
+        <div class="ab-name">🤖 超级助理（Super Agent）</div>
+        <div class="ab-desc">意图理解 · 任务分派 · 上下文管理 · 成果总结反馈<br><span class="tag tag-p">作战导航 ∈ 超级助理 · 默认主视图</span></div>
+      </div>
+    </div>
+    <div class="arch-arrow">▼ 调度分派 ▼</div>
+    <div class="arch-row">
+      <div class="arch-box"><div class="ab-name">🔍 销售洞察</div><div class="ab-desc">情报收集<br>标讯获取与分发<br>客户360画像<br>拜访资料生成</div></div>
+      <div class="arch-box"><div class="ab-name">📋 作战计划</div><div class="ab-desc">目标拆解与分派<br>拜访计划生成<br>外呼计划生成<br>任务管理</div></div>
+      <div class="arch-box"><div class="ab-name">⚡ 作战执行</div><div class="ab-desc">拜访智能填报<br>产品方案生成<br>CPQ 配置<br>商机/标书处理</div></div>
+      <div class="arch-box"><div class="ab-name">📊 作战跟进</div><div class="ab-desc">业绩 BI 分析<br>目标达成 Track<br>竞争力指标监控<br>异常预警</div></div>
+      <div class="arch-box"><div class="ab-name">🎓 销售教练</div><div class="ab-desc">知识问答<br>智能培训<br>1对1 模拟陪练<br>优秀案例沉淀</div></div>
+    </div>
+  </div>
+
+  <!-- Agent Skill Table -->
+  <h2>各 Agent 能力 & Skill 清单</h2>
+  <table class="ft">
+    <tr><th style="width:15%">Agent</th><th style="width:35%">核心 Skill</th><th style="width:25%">数据产出</th><th style="width:25%">被作战导航触发</th></tr>
+    <tr>
+      <td>🤖 超级助理</td>
+      <td>意图路由 · 任务编排 · 成果聚合 · 上下文管理</td>
+      <td>对话上下文、任务状态、意图分类</td>
+      <td>—（调度者）</td>
+    </tr>
+    <tr>
+      <td>🔍 销售洞察</td>
+      <td>标讯获取与分发 · 客户360画像 · 行业洞察分析 · 竞品情报收集 · 拜访资料包生成</td>
+      <td>标讯列表、客户档案、行业报告、竞品动态</td>
+      <td>获取特定客户拜访资料包</td>
+    </tr>
+    <tr>
+      <td>📋 作战计划</td>
+      <td>经营目标拆解 · 团队任务分派 · 拜访计划生成 · 外呼计划生成 · 日程管理</td>
+      <td>计划任务、拜访日程、外呼列表</td>
+      <td>根据差距自动生成/调整拜访计划和外呼计划</td>
+    </tr>
+    <tr>
+      <td>⚡ 作战执行</td>
+      <td>拜访智能填报 · 产品方案生成 · CPQ 报价配置 · 商机智能生成 · 标书解析与生成</td>
+      <td>拜访记录、方案文档、商机数据、合同数据</td>
+      <td>生成产品方案 · 生成报价 · 解析/生成标书</td>
+    </tr>
+    <tr>
+      <td>📊 作战跟进</td>
+      <td>业绩 BI 分析看板 · 目标达成 Track · 竞争力指标监控 · 阈值预警 · 自定义监控规则</td>
+      <td>BI 看板、预警通知、达成趋势</td>
+      <td>创建自定义监控规则</td>
+    </tr>
+    <tr>
+      <td>🎓 销售教练</td>
+      <td>知识库问答 · 智能培训课程 · 1对1 模拟陪练 · 优秀案例自动沉淀 · 辅导建议推送</td>
+      <td>知识条目、案例库、培训记录、成长档案</td>
+      <td>触发辅导/知识问答/模拟陪练 · 沉淀优秀案例</td>
+    </tr>
+  </table>
+
+  <!-- 作战导航 Positioning -->
+  <h2>🎯 作战导航 · 功能定位</h2>
+  <p><b>作战导航是超级助理的核心功能视图，非独立 Agent。</b>它是销售智能体的默认主界面，聚合 5 个专家 Agent 的数据，以指挥舱形态呈现目标和差距，支持差距诊断与路径规划，并反向触发专家 Agent 执行行动。</p>
+
+  <h3>6 大信息模块</h3>
+  <table class="ft">
+    <tr><th>模块</th><th>数据来源</th><th>AR Sales</th><th>战区总经理</th></tr>
+    <tr><td>📊 经营目标全景</td><td>跟进 Agent</td><td>个人 REV/CA/竞争力指标 + 排名</td><td>团队 REV/CA + 战区排名 + 成员排名</td></tr>
+    <tr><td>👤 客户经营情况</td><td>执行 + 跟进</td><td>名下客户贡献/回款/风险/动态</td><td>团队客户聚合 + 异常预警</td></tr>
+    <tr><td>📡 标讯看板</td><td>洞察 Agent</td><td>按战区+行业过滤，意向/公开标签区分</td><td>团队标讯分配 + 高价值跟踪</td></tr>
+    <tr><td>🎯 战略任务达成</td><td>计划 + 执行</td><td>四类任务进度条</td><td>团队进度 + 落后成员标注</td></tr>
+    <tr><td>🔍 差距 & 路径建议</td><td>AI 综合分析</td><td>个人差距 + 最优达成路径 + 一键触发</td><td>团队差距 + 管理行动建议</td></tr>
+    <tr><td>📋 行动提醒 + Feed</td><td>多 Agent 汇总</td><td>拜访/标讯/任务/会议 + Agent 推送</td><td>同上 + 团队管理提醒</td></tr>
+  </table>
+
+  <h2>💡 核心设计原则</h2>
+  <div class="caps">
+    <div class="cap"><div class="ca-icon">🔄</div><div class="ca-title">聚合而非替代</div><div class="ca-desc">作战导航不自己产生数据，从各专家 Agent 拉取数据做整合展示，是「驾驶舱」而非「发动机」</div></div>
+    <div class="cap"><div class="ca-icon">🚀</div><div class="ca-title">展示 + 调度</div><div class="ca-desc">既能聚合展示各 Agent 输出，又能反向触发行动 —— 发现差距后一键调用计划 Agent 生成拜访计划</div></div>
+    <div class="cap"><div class="ca-icon">👥</div><div class="ca-title">角色智能适配</div><div class="ca-desc">同一框架，不同内容。AR Sales 看「我」，战区总经理看「团队」。按角色差异化呈现作战路径</div></div>
+    <div class="cap"><div class="ca-icon">📱</div><div class="ca-title">双端形态适配</div><div class="ca-desc">PC 指挥舱多面板高密度 · Mobile Agent 对话 + 卡片交互。功能对等，形态随端适配</div></div>
+    <div class="cap"><div class="ca-icon">🗺️</div><div class="ca-title">路径 + 节奏</div><div class="ca-desc">既有目标路径可视化（差距→根因→路径→触发），又有节奏监控（Q2已过X%，应达Y%，当前Z%）</div></div>
+    <div class="cap"><div class="ca-icon">📋</div><div class="ca-title">沉淀可复用</div><div class="ca-desc">标准化执行范式沉淀，优秀案例自动入库，管理经验可复制，实现作战效能最大化</div></div>
+  </div>
+
+</div>
+</body>
+</html>
