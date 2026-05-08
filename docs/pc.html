@@ -222,9 +222,9 @@ var GM = {
   name:'王指挥',role:'gm',region:'东南大区',territory:'浙江战区',industries:['企业级IT','制造'],
   targets:{rev:{target:18000,achieved:7560,rank:'2/8',trend:1},ca:{target:13000,achieved:7150,rank:'2/8',trend:1},compA:{target:100,achieved:72,rank:'3/8',trend:0},compB:{target:100,achieved:88,rank:'2/8',trend:1}},
   members:[
-    {name:'张三',rev:40,ca:55,status:'good'},{name:'李四',rev:52,ca:60,status:'good'},
-    {name:'王五',rev:28,ca:35,status:'risk'},{name:'赵六',rev:25,ca:30,status:'risk'},
-    {name:'钱七',rev:18,ca:22,status:'critical'},{name:'孙八',rev:48,ca:55,status:'good'}
+    {name:'张三',cps:40,k1:55,k2:72,k3:82,status:'good'},{name:'李四',cps:52,k1:60,k2:68,k3:75,status:'good'},
+    {name:'王五',cps:28,k1:35,k2:40,k3:45,status:'risk'},{name:'赵六',cps:25,k1:30,k2:32,k3:38,status:'risk'},
+    {name:'钱七',cps:18,k1:22,k2:25,k3:28,status:'critical'},{name:'孙八',cps:48,k1:55,k2:60,k3:68,status:'good'}
   ],
   strategicTasks:[{label:'高价值客户经营',done:16,total:30},{label:'海光战核客户经营',done:14,total:24},{label:'重点战役',done:9,total:18},{label:'客户拜访',done:78,total:120}],
   bids:{
@@ -364,17 +364,31 @@ function renderCustomers(){
 function renderMembers(){
   var c=document.getElementById('cust'); if(!c) return;
   c.innerHTML='<div class="sec-hd"><span>🏅</span> 成员达成率排名 <span class="st">'+data.territory+'</span></div>';
-  var srt=data.members.slice().sort(function(a,b){return b.rev-a.rev;});
+  // Header
+  c.appendChild(h('div',{c:'row-item',s:'font-size:10px;color:var(--text-muted);font-weight:600;padding-bottom:6px;border-bottom:2px solid var(--border-light)',h:
+    '<span style="width:22px;text-align:center">#</span>'+
+    '<span style="flex:1.2;font-weight:600">姓名</span>'+
+    '<span style="flex:0.8;text-align:right">CPS</span>'+
+    '<span style="flex:0.8;text-align:right">K1</span>'+
+    '<span style="flex:0.8;text-align:right">K2</span>'+
+    '<span style="flex:0.8;text-align:right">K3</span>'+
+    '<span style="flex:0.8;text-align:center">状态</span>'+
+    '<span style="flex:0.5;text-align:right">操作</span>'
+  }));
+  var srt=data.members.slice().sort(function(a,b){return b.cps-a.cps;});
   srt.forEach(function(m,i){
     var cls=m.status==='good'?'s':m.status==='risk'?'w':'d';
     var txt=m.status==='good'?'优秀':m.status==='risk'?'需关注':'预警';
+    var cc=function(v){return v>=50?'color:var(--success)':v>=30?'color:var(--warning)':'color:var(--danger)';};
     c.appendChild(h('div',{c:'row-item',h:
       '<span class="mono" style="width:22px;text-align:center;font-weight:700;color:var(--text-muted)">'+(i+1)+'</span>'+
-      '<span style="flex:1.5;font-weight:600">'+m.name+'</span>'+
-      '<span class="mono" style="flex:1;text-align:right">REV '+m.rev+'%</span>'+
-      '<span class="mono" style="flex:1;text-align:right">CA '+m.ca+'%</span>'+
-      '<span style="flex:1;text-align:center"><span class="badge badge-'+cls+'">'+txt+'</span></span>'+
-      '<span style="flex:0.6;text-align:right;color:var(--purple);cursor:pointer;font-size:11px">下钻 ▸</span>'}));
+      '<span style="flex:1.2;font-weight:600">'+m.name+'</span>'+
+      '<span class="mono" style="flex:0.8;text-align:right;'+cc(m.cps)+'">'+m.cps+'%</span>'+
+      '<span class="mono" style="flex:0.8;text-align:right;'+cc(m.k1)+'">'+m.k1+'%</span>'+
+      '<span class="mono" style="flex:0.8;text-align:right;'+cc(m.k2)+'">'+m.k2+'%</span>'+
+      '<span class="mono" style="flex:0.8;text-align:right;'+cc(m.k3)+'">'+m.k3+'%</span>'+
+      '<span style="flex:0.8;text-align:center"><span class="badge badge-'+cls+'">'+txt+'</span></span>'+
+      '<span style="flex:0.5;text-align:right;color:var(--purple);cursor:pointer;font-size:11px">下钻 ▸</span>'}));
   });
 }
 
