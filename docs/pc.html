@@ -104,6 +104,35 @@
   .scenario-bar a { color:var(--purple); text-decoration:none; font-weight:600; }
   .scenario-bar .sc-tag { background:var(--purple);color:#fff;padding:2px 8px;border-radius:var(--r-full);font-size:9px;font-weight:700; }
   .scenario-bar .sc-step { color:var(--text-muted);font-size:10px;margin-left:auto; }
+
+  /* Floating Agent Chat */
+  .agent-float { position:fixed;bottom:20px;right:20px;z-index:1000;display:flex;flex-direction:column;align-items:flex-end; }
+  .agent-toggle { width:48px;height:48px;border-radius:50%;background:var(--purple);color:#fff;border:none;font-size:22px;cursor:pointer;box-shadow:0 4px 16px rgba(113,50,245,0.3);transition:all 0.2s;display:flex;align-items:center;justify-content:center; }
+  .agent-toggle:hover { background:var(--purple-dark);transform:scale(1.05); }
+  .agent-toggle.open { background:var(--danger); }
+  .agent-panel { display:none;width:380px;height:520px;background:#fff;border-radius:var(--r-2xl);box-shadow:0 8px 40px rgba(0,0,0,0.12);flex-direction:column;overflow:hidden;margin-bottom:12px;border:1px solid var(--border); }
+  .agent-panel.show { display:flex; }
+  .agent-panel.mini { height:48px; }
+  .agent-panel .ap-header { display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--purple);color:#fff;cursor:pointer;flex-shrink:0; }
+  .agent-panel .ap-header .ap-avatar { width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:14px; }
+  .agent-panel .ap-header .ap-title { font-family:var(--font-display);font-size:13px;font-weight:700;flex:1; }
+  .agent-panel .ap-header .ap-actions { display:flex;gap:4px; }
+  .agent-panel .ap-header .ap-actions button { width:24px;height:24px;border-radius:50%;border:none;background:rgba(255,255,255,0.2);color:#fff;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center; }
+  .agent-panel .ap-chat { flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;background:var(--bg); }
+  .agent-panel .ap-chat .ap-msg { display:flex;gap:6px;font-size:11px;animation:fadeUp 0.25s ease-out; }
+  .agent-panel .ap-chat .ap-msg.agent { align-items:flex-start; }
+  .agent-panel .ap-chat .ap-msg.user { justify-content:flex-end; }
+  .agent-panel .ap-chat .ap-bub { padding:7px 10px;border-radius:10px;line-height:1.5;max-width:85%; }
+  .agent-panel .ap-chat .ap-bub.agent-bub { background:#fff;border:1px solid var(--border-light);border-radius:10px 10px 10px 2px; }
+  .agent-panel .ap-chat .ap-bub.user-bub { background:var(--purple);color:#fff;border-radius:10px 10px 2px 10px; }
+  .agent-panel .ap-chips { display:flex;gap:4px;flex-wrap:wrap;padding:6px 10px;border-top:1px solid var(--border-light);flex-shrink:0; }
+  .agent-panel .ap-chips button { padding:4px 10px;border-radius:var(--r-full);border:1px solid var(--border-light);background:#fff;font-size:10px;cursor:pointer;color:var(--text-secondary);white-space:nowrap; }
+  .agent-panel .ap-chips button:hover { border-color:var(--purple);color:var(--purple); }
+  .agent-panel .ap-input { display:flex;gap:6px;padding:8px 10px;border-top:1px solid var(--border-light);flex-shrink:0; }
+  .agent-panel .ap-input input { flex:1;border:1px solid var(--border-light);border-radius:var(--r-full);padding:6px 12px;font-size:11px;outline:none; }
+  .agent-panel .ap-input input:focus { border-color:var(--purple); }
+  .agent-panel .ap-input button { width:30px;height:30px;border-radius:50%;border:none;background:var(--purple);color:#fff;cursor:pointer;font-size:14px;flex-shrink:0; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
 </style>
 </head>
 <body>
@@ -142,7 +171,34 @@
     <section class="card g-bids" id="bids"></section>
   </main>
 
-  <div class="map-overlay" id="moverlay">
+  <!-- Floating Agent Chat -->
+<div class="agent-float">
+  <div class="agent-panel" id="agentPanel">
+    <div class="ap-header" onclick="toggleAgent()">
+      <div class="ap-avatar"><img src="asset/agent.png" style="width:20px;height:20px;border-radius:50%" alt="Agent"></div>
+      <div class="ap-title">销售智能体</div>
+      <div class="ap-actions">
+        <button onclick="event.stopPropagation();toggleMini()" title="最小化">—</button>
+        <button onclick="event.stopPropagation();closeAgent()" title="关闭">✕</button>
+      </div>
+    </div>
+    <div class="ap-chat" id="agentChat"></div>
+    <div class="ap-chips" id="agentChips">
+      <button onclick="agentAsk('帮我生成拜访计划')">📋 生成拜访计划</button>
+      <button onclick="agentAsk('查看最新标讯')">📡 标讯洞察</button>
+      <button onclick="agentAsk('看看教练建议')">🎓 教练建议</button>
+      <button onclick="agentAsk('我的商机进展')">📈 商机跟进</button>
+      <button onclick="agentAsk('展开作战看板')">📊 作战看板</button>
+    </div>
+    <div class="ap-input">
+      <input type="text" id="agentInput" placeholder="输入消息..." onkeydown="if(event.key==='Enter')agentSend()">
+      <button onclick="agentSend()">↑</button>
+    </div>
+  </div>
+  <button class="agent-toggle" id="agentToggle" onclick="toggleAgent()" title="销售智能体"><img src="asset/agent.png" style="width:44px;height:44px;border-radius:50%" alt="Agent"></button>
+</div>
+
+<div class="map-overlay" id="moverlay">
     <div class="map-body">
       <div class="map-left" id="mapLeft"></div>
       <div class="map-right" id="mapRight"></div>
@@ -451,7 +507,7 @@ function renderGap(){
       '<div style="font-weight:700;font-size:12px;margin-bottom:4px">⚠ REV 差距 ¥19万 · 某云计算科技未覆盖 · 某大数据中心商机停滞</div>'+
       '<div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px">根因：某云计算科技未覆盖 · 某大数据中心商机停滞 · 某智能制造企业续约风险</div>'+
       '<div style="font-size:12px;color:var(--purple);font-weight:600;margin-bottom:10px">→ 最优路径：某云计算科技 ¥32万 → 通用服务器标讯 ¥120万 → 续约某智能制造 ¥10万</div>'+
-      '<button class="btn btn-p btn-xs" onclick="alert(\'🤖 已触发作战计划Agent\\n\\n✅ 已生成今日拜访计划：\\n上午 某云计算科技 — 服务器方案演示\\n下午 某大数据中心 — 存储扩容沟通\\n\\n✅ 已同步到行动提醒\')">📋 生成拜访计划</button> '+
+      '<button class="btn btn-p btn-xs" onclick="alert(\'Agent 已触发作战计划Agent\\n\\n✅ 已生成今日拜访计划：\\n上午 某云计算科技 — 服务器方案演示\\n下午 某大数据中心 — 存储扩容沟通\\n\\n✅ 已同步到行动提醒\')">📋 生成拜访计划</button> '+
       '<button class="btn btn-sub btn-xs" onclick="alert(\'🔍 已触发洞察Agent\\n\\n正在获取某云计算科技360画像和拜访资料包...\')">📁 获取拜访资料</button>'}));
   } else {
     c.appendChild(h('div',{s:'padding:12px;border-radius:var(--r-lg);background:var(--danger-subtle);border:1px solid rgba(229,69,69,0.2);margin-bottom:8px',h:
@@ -480,7 +536,7 @@ function renderActions(){
       var icon=f.type==='danger'?'🚨':f.type==='warning'?'⚠':f.type==='success'?'🏆':'💡';
       var bg=f.type==='danger'?'var(--danger-subtle)':f.type==='warning'?'var(--warning-subtle)':'var(--purple-light)';
       c.appendChild(h('div',{s:'padding:5px 0;font-size:11px;background:'+bg+';border-radius:4px;padding-left:6px;margin-top:2px',h:
-        '<span class="badge badge-purple" style="font-size:8px;margin-right:4px">🤖 '+f.from+'</span>'+icon+' '+f.msg}));
+        '<span class="badge badge-purple" style="font-size:8px;margin-right:4px">Agent '+f.from+'</span>'+icon+' '+f.msg}));
     });
   }
   if(role==='gm'){
@@ -983,6 +1039,50 @@ if(scenario){
 }
 
 updateUI(); renderAll(); bindNav();
+
+// ═══════ FLOATING AGENT CHAT ═══════
+function toggleAgent(){
+  var p=document.getElementById('agentPanel');
+  var b=document.getElementById('agentToggle');
+  if(p.classList.contains('show')){ closeAgent(); return; }
+  p.classList.add('show'); p.classList.remove('mini');
+  b.classList.add('open'); b.innerHTML='✕';
+  var chat=document.getElementById('agentChat');
+  if(!chat.querySelector('.ap-msg')){
+    agentAddMsg('你好！我是<b>销售智能体</b>，可以帮你：<br>📋 生成拜访计划 · 📡 标讯洞察 · 🎓 教练建议 · 📈 商机跟进 · 📊 作战看板<br><br>试试点击下方的快捷操作，或输入你的需求。');
+  }
+}
+function closeAgent(){
+  document.getElementById('agentPanel').classList.remove('show','mini');
+  var b=document.getElementById('agentToggle');
+  b.classList.remove('open'); b.innerHTML='<img src="asset/agent.png" style="width:44px;height:44px;border-radius:50%" alt="Agent">';
+}
+function toggleMini(){
+  var p=document.getElementById('agentPanel');
+  p.classList.toggle('mini');
+}
+function agentAddMsg(t){var c=document.getElementById('agentChat');var d=document.createElement('div');d.className='ap-msg agent';d.innerHTML='<div class="ap-bub agent-bub">'+t+'</div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function agentAddUser(t){var c=document.getElementById('agentChat');var d=document.createElement('div');d.className='ap-msg user';d.innerHTML='<div class="ap-bub user-bub">'+t+'</div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function agentSend(){
+  var inp=document.getElementById('agentInput');
+  var t=inp.value.trim(); if(!t) return; inp.value='';
+  agentAsk(t);
+}
+function agentAsk(t){
+  agentAddUser(t);
+  setTimeout(function(){
+    if(t.indexOf('拜访计划')>=0){agentAddMsg('收到。正在调用 <b>作战计划Agent</b>...');setTimeout(function(){agentAddMsg('✅ 已生成今日拜访计划：<br><br>📅 <b>上午 10:00</b> 某云计算科技 — 服务器方案演示<br>📅 <b>下午 14:00</b> 某大数据中心 — 存储扩容沟通<br><br>已同步到行动提醒。');},1000);}
+    else if(t.indexOf('标讯')>=0){agentAddMsg('🔍 <b>洞察Agent</b> 匹配到 2 条高价值标讯：<br><br>📡 私有云平台建设项目 · ¥150万 · 3天后截止<br>📡 AI算力集群采购 · ¥80万 · 8天后截止<br><br>建议优先跟进私有云平台项目。');}
+    else if(t.indexOf('教练')>=0){agentAddMsg('🎓 <b>教练Agent</b>：你在客户异议处理方面有提升空间。王五在类似场景下被评为优秀案例，建议模拟陪练。');}
+    else if(t.indexOf('商机')>=0){agentAddMsg('📈 你当前有 <b>6个</b> 活跃商机：<br><br>🟢 混合云三期 ¥320万 (60%)<br>🟢 存储扩容 ¥90万 (50%)<br>🟢 AI算力 ¥180万 (35%)<br>🟡 政务云安全 ¥35万 (停滞)<br>🔵 IT续约 ¥12万 (90%)<br><br>总金额 ¥777万，平均赢单率 48%。');}
+    else if(t.indexOf('看板')>=0){agentAddMsg('📊 作战看板已展开。你可以查看：<br>· CPS/K1/K2/K3 四维指标<br>· 客户经营情况（B1/B2/B3等级+高价值标签）<br>· 我的订单（5笔）+ 我的商机（6个）<br>· 标讯看板');}
+    else{agentAddMsg('好的，我来帮你处理。「'+t+'」功能正在演示中。你可以尝试点击下方的快捷操作按钮。');}
+  },400);
+}
+// Auto-welcome on first toggle
+var _agentWelcomed=false;
+var origToggle=toggleAgent;
+toggleAgent=function(){ if(!_agentWelcomed){_agentWelcomed=true;} origToggle(); };
 </script>
 </body>
 </html>

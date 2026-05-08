@@ -97,7 +97,7 @@
 <body>
 <div class="sh">
   <header class="mh">
-    <div class="av">🤖</div>
+    <div class="av"><img src="asset/agent.png" style="width:22px;height:22px;border-radius:50%" alt="Agent"></div>
     <div class="info"><div class="name">销售智能体</div><div class="sub" id="stitle"></div></div>
     <button class="rt" id="rtoggle">切换角色</button>
   </header>
@@ -146,7 +146,7 @@ function gD(r){return r==='gm'?GM:AR;}
 var role=(new URLSearchParams(window.location.search)).get('role')||'ar';
 var data=gD(role);
 
-function addMsg(t){var c=document.getElementById('chat');var d=document.createElement('div');d.className='msg msg-a';d.innerHTML='<div class="mav">🤖</div><div class="bub bub-a">'+t+'</div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function addMsg(t){var c=document.getElementById('chat');var d=document.createElement('div');d.className='msg msg-a';d.innerHTML='<div class="mav"><img src="asset/agent.png" style="width:16px;height:16px;vertical-align:middle;border-radius:50%" alt="Agent"></div><div class="bub bub-a">'+t+'</div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
 function addUser(t){var c=document.getElementById('chat');var d=document.createElement('div');d.className='msg msg-u';d.innerHTML='<div class="bub bub-u">'+t+'</div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
 function addCard(h){var c=document.getElementById('chat');var d=document.createElement('div');d.className='card-c';d.innerHTML=h;c.appendChild(d);c.scrollTop=c.scrollHeight;}
 
