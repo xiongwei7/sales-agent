@@ -154,11 +154,25 @@ function runGreeting(){
   setTimeout(function(){addMsg('早上好！☀️<br>你的今日作战概览已就绪。今日有 <b>3 个待拜访客户</b>，已为你准备好拜访导航。');},400);
   setTimeout(pushMetrics,1200);
   if(role==='ar'){
-    setTimeout(function(){addMsg('你有 <b style="color:var(--danger)">2 个差距</b>需关注：REV 达成 40%，某云计算科技未覆盖、某大数据中心商机停滞。');},2000);
+    setTimeout(function(){addMsg('你有 <b style="color:var(--danger)">2 个差距</b>需关注：CPS完成率 42%，某云计算科技未覆盖、某大数据中心商机停滞。');},2000);
     setTimeout(pushGap,3000);
     setTimeout(function(){addMsg('建议今日重点拜访某云计算科技，预计可贡献 ¥32万。<br>需要我帮你生成今日拜访计划吗？');},4200);
     // Auto-play scenario
-    if(scenario==='1'){ setTimeout(function(){ updateScStep('自动触发：生成今日拜访计划'); hAct('帮我生成拜访计划'); },5200); }
+    if(scenario==='1'){
+      setTimeout(function(){ updateScStep('自动触发：生成今日拜访计划'); hAct('帮我生成拜访计划'); },5200);
+      setTimeout(function(){ updateScStep('Agent 推荐：查看客户详情'); addMsg('💡 提醒：拜访前建议查看客户 <b>Account Plan</b>，已为你准备好某云计算科技的 IT Spending、友商态势、重点项目和最近拜访记录。'); },8000);
+      setTimeout(function(){
+        addCard('<div style="font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:6px">📋 某云计算科技 · Account Plan 摘要</div>'+
+          '<div style="font-size:10px;color:var(--text-secondary);line-height:1.6">'+
+          '<b>💰 IT Spending：</b>¥8,500万/年 · 多云架构转型<br>'+
+          '<b>⚔️ 友商：</b>H公司(核心供应商) · HP(次要) · Dell(潜在)<br>'+
+          '<b>📌 重点项目：</b>混合云三期 ¥3,200万(方案阶段) · AI扩容 ¥1,800万(招标中)<br>'+
+          '<b>📝 最近拜访：</b>5/3 方案演示(CTO正面反馈) · 4/18 商务拜访(采购预算释放)</div>'+
+          '<div style="color:var(--purple);font-size:10px;margin-top:6px;cursor:pointer">打开完整 Account Plan →</div>');
+        updateScStep('Agent 推送：客户 Account Plan 摘要');
+      },8500);
+      setTimeout(function(){ updateScStep('完成：战前准备就绪 — 拜访计划 + 客户洞察 + 订单商机概览'); addMsg('✅ 今日战前准备已完成！<br><br>📅 <b>拜访计划</b>已就绪<br>📋 <b>客户 Account Plan</b>可随时查阅<br>📦 <b>我的订单</b> 5笔 · <b>我的商机</b> 6个<br><br>祝你今日作战顺利！🎯'); },10500);
+    }
     if(scenario==='2'){ setTimeout(function(){ updateScStep('自动触发：标讯推送 → 创建商机 → 生成沟通资料'); },3000); setTimeout(function(){ hAct('查看最新标讯'); },3500); }
     if(scenario==='4'){ setTimeout(function(){ updateScStep('自动触发：教练建议 → 案例展示 → 模拟陪练'); hAct('看看教练建议'); },5200); }
   } else {
@@ -174,12 +188,12 @@ function updateScStep(t){ var el=document.getElementById('scStep'); if(el) el.te
 function pushMetrics(){
   var t=data.targets;
   var items=role==='ar'?[
-    {l:'Q2 REV',v:fmP(t.rev.achieved,t.rev.target),c:'var(--danger)',s:'排名 '+t.rev.rank},
-    {l:'Q2 CA',v:fmP(t.ca.achieved,t.ca.target),c:'var(--success)',s:'排名 '+t.ca.rank},
-    {l:'竞争力 A',v:fmV(t.compA.achieved),c:'',s:'排名 '+t.compA.rank},
-    {l:'竞争力 B',v:fmV(t.compB.achieved),c:'',s:'排名 '+t.compB.rank}
+    {l:'CPS完成率',v:fmP(t.rev.achieved,t.rev.target),c:'var(--danger)',s:'排名 '+t.rev.rank},
+    {l:'K1 复合完成率',v:fmP(t.ca.achieved,t.ca.target),c:'var(--success)',s:'排名 '+t.ca.rank},
+    {l:'K2 复合完成率',v:fmV(t.compA.achieved),c:'',s:'排名 '+t.compA.rank},
+    {l:'K3 REV完成率',v:fmV(t.compB.achieved),c:'',s:'排名 '+t.compB.rank}
   ]:[
-    {l:'团队 REV',v:fmP(t.rev.achieved,t.rev.target),c:'var(--success)',s:'战区排名 '+t.rev.rank},
+    {l:'团队 CPS',v:fmP(t.rev.achieved,t.rev.target),c:'var(--success)',s:'战区排名 '+t.rev.rank},
     {l:'团队 CA',v:fmP(t.ca.achieved,t.ca.target),c:'var(--success)',s:'战区排名 '+t.ca.rank}
   ];
   var h='<div style="font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:8px">📊 经营目标全景</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">';
@@ -199,9 +213,9 @@ function showDashboard(){
     // Metrics
     h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:10px">';
     if(role==='ar'){
-      h+=mt('Q2 REV',fmP(t.rev.achieved,t.rev.target),'var(--danger)')+mt('Q2 CA',fmP(t.ca.achieved,t.ca.target),'var(--success)')+mt('竞争力A',fmV(t.compA.achieved),'')+mt('竞争力B',fmV(t.compB.achieved),'');
+      h+=mt('CPS完成率',fmP(t.rev.achieved,t.rev.target),'var(--danger)')+mt('K1 复合完成率',fmP(t.ca.achieved,t.ca.target),'var(--success)')+mt('K2 复合完成率',fmV(t.compA.achieved),'')+mt('K3 REV完成率',fmV(t.compB.achieved),'');
     }else{
-      h+=mt('团队REV',fmP(t.rev.achieved,t.rev.target),'var(--success)')+mt('团队CA',fmP(t.ca.achieved,t.ca.target),'var(--success)');
+      h+=mt('团队CPS',fmP(t.rev.achieved,t.rev.target),'var(--success)')+mt('团队K1',fmP(t.ca.achieved,t.ca.target),'var(--success)');
     }
     h+='</div>';
 
@@ -216,7 +230,7 @@ function showDashboard(){
     // Gap
     h+='<div style="font-weight:600;font-size:11px;margin:8px 0 4px">🔍 关键差距</div>';
     h+=role==='ar'
-      ?'<div style="font-size:10px;color:var(--text-secondary)">⚠ REV差¥12万 · 高价值客户缺口3家</div>'
+      ?'<div style="font-size:10px;color:var(--text-secondary)">⚠ CPS差¥12万 · 高价值客户缺口3家</div>'
       :'<div style="font-size:10px;color:var(--text-secondary)">⚠ 王五REV28% · 钱七拜访落后 · 赵六新人25%</div>';
 
     addCard(h);
@@ -227,7 +241,7 @@ function mt(l,v,c){return '<div style="background:var(--bg);border-radius:6px;pa
 function pushGap(){
   if(role==='ar'){
     addCard('<div style="font-family:var(--font-display);font-weight:700;font-size:13px;margin-bottom:6px">🔍 差距 & 路径建议</div>'+
-      '<div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px">⚠ REV 差距 ¥19万 · 某云计算科技未覆盖 · 某大数据中心商机停滞</div>'+
+      '<div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px">⚠ CPS差距 ¥19万 · 某云计算科技未覆盖 · 某大数据中心商机停滞</div>'+
       '<div style="font-size:11px;color:var(--purple);font-weight:600;margin-bottom:8px">→ 最优路径：某云计算科技 ¥32万 → 通用服务器标讯 ¥120万</div>'+
       '<button class="btn btn-p btn-xs" onclick="hAct(\'帮我生成拜访计划\')">📋 生成拜访计划</button> '+
       '<button class="btn btn-sub btn-xs" onclick="hAct(\'看看教练建议\')">🎓 教练建议</button>');
