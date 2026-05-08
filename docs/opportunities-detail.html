@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>我的商机 · 作战导航</title>
+<link rel="stylesheet" href="css/styles.css">
+<style>body{background:var(--bg)}.page{max-width:800px;margin:0 auto;padding:24px}.back{display:inline-flex;align-items:center;gap:4px;color:var(--purple);text-decoration:none;font-size:13px;font-weight:600;margin-bottom:20px}.back:hover{color:var(--purple-dark)}h1{font-family:var(--font-display);font-size:22px;font-weight:700;margin-bottom:20px}.card{background:#fff;border-radius:var(--r-xl);padding:14px 16px;margin-bottom:10px;border:1px solid var(--border-light);box-shadow:var(--shadow-sm)}.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.card-head .name{font-weight:700;font-size:14px}.card-row{display:flex;gap:10px;font-size:12px;color:var(--text-secondary);margin-bottom:3px;align-items:center}.card-row .lbl{color:var(--text-muted);white-space:nowrap}.pipeline{display:flex;gap:0;margin:6px 0;font-size:9px}.pipe-step{flex:1;text-align:center;padding:3px 2px;border-radius:2px;background:var(--border-light);color:var(--text-muted)}.pipe-step.done{background:var(--success-subtle);color:var(--success-dark);font-weight:600}.pipe-step.current{background:var(--purple);color:#fff;font-weight:700}</style></head><body><div class="page">
+<a href="javascript:history.back()" class="back">← 返回指挥舱</a><h1>📈 我的商机</h1>
+<div id="list"></div>
+</div>
+<script>
+var opps=[
+  {name:'某云计算科技 — 混合云平台三期',amount:'¥3,200万',stage:'方案演示',probability:60,status:'active',nextStep:'提供TCO报告和POC计划',pipe:4,pipeMax:6,contact:'CTO 王总',closeDate:'2026-Q3'},
+  {name:'某大数据中心 — 分布式存储扩容',amount:'¥900万',stage:'招标中',probability:50,status:'active',nextStep:'跟进投标',pipe:3,pipeMax:6,contact:'采购部 李经理',closeDate:'2026-Q2'},
+  {name:'某互联网集团 — AI算力集群',amount:'¥1,800万',stage:'初步接触',probability:35,status:'active',nextStep:'安排技术交流',pipe:2,pipeMax:6,contact:'基础架构 VP 陈总',closeDate:'2026-Q4'},
+  {name:'某金融科技公司 — 服务器采购',amount:'¥400万',stage:'商务谈判',probability:70,status:'active',nextStep:'提交最终报价',pipe:5,pipeMax:6,contact:'IT总监 赵总',closeDate:'2026-05'},
+  {name:'某政府信息中心 — 政务云安全加固',amount:'¥350万',stage:'停滞',probability:20,status:'stalled',nextStep:'重新激活需求',pipe:3,pipeMax:6,contact:'信息中心 周主任',closeDate:'待定'},
+  {name:'某智能制造企业 — IT设备续约',amount:'¥120万',stage:'合同签署',probability:90,status:'closing',nextStep:'确认合同条款',pipe:6,pipeMax:6,contact:'行政部 刘主管',closeDate:'2026-06'}
+];
+var stages=['初步接触','需求确认','方案阶段','招标/报价','商务谈判','合同签署'];
+var h='';
+opps.forEach(function(o,i){
+  h+='<div class="card"><div class="card-head"><span class="name">'+(i+1)+'. '+o.name+'</span><span class="mono" style="font-size:14px;font-weight:700;color:var(--purple)">'+o.amount+'</span></div>';
+  // Pipeline bar
+  h+='<div class="pipeline">';
+  stages.forEach(function(s,si){
+    var cls=si<o.pipe?'done':si===o.pipe-1?'current':'';
+    h+='<div class="pipe-step'+(cls?' '+cls:'')+'">'+(cls?'● ':'')+s+'</div>';
+  });
+  h+='</div>';
+  h+='<div class="card-row"><span class="lbl">当前阶段</span><span>'+o.stage+'</span><span class="lbl" style="margin-left:12px">赢单率</span><span class="mono" style="font-weight:700;color:'+(o.probability>=60?'var(--success)':o.probability>=40?'var(--warning)':'var(--danger)')+'">'+o.probability+'%</span><span class="lbl" style="margin-left:12px">预计签单</span><span>'+o.closeDate+'</span></div>';
+  h+='<div class="card-row"><span class="lbl">联系人</span><span>'+o.contact+'</span></div>';
+  h+='<div class="card-row"><span class="lbl">下一步</span><span style="font-weight:600">📝 '+o.nextStep+'</span></div></div>';
+});
+document.getElementById('list').innerHTML=h;
+</script></body></html>

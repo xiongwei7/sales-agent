@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>我的订单 · 作战导航</title>
+<link rel="stylesheet" href="css/styles.css">
+<style>body{background:var(--bg)}.page{max-width:800px;margin:0 auto;padding:24px}.back{display:inline-flex;align-items:center;gap:4px;color:var(--purple);text-decoration:none;font-size:13px;font-weight:600;margin-bottom:20px}.back:hover{color:var(--purple-dark)}h1{font-family:var(--font-display);font-size:22px;font-weight:700;margin-bottom:20px}.card{background:#fff;border-radius:var(--r-xl);padding:14px 16px;margin-bottom:10px;border:1px solid var(--border-light);box-shadow:var(--shadow-sm)}.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.card-head .name{font-weight:700;font-size:14px}.card-head .amount{font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--purple)}.card-row{display:flex;gap:16px;font-size:12px;color:var(--text-secondary);margin-bottom:4px}.card-row span{display:inline-flex;align-items:center;gap:4px}.card-row .lbl{color:var(--text-muted)}</style></head><body><div class="page">
+<a href="javascript:history.back()" class="back">← 返回指挥舱</a><h1>📦 我的订单</h1>
+<div id="list"></div>
+</div>
+<script>
+var orders=[
+  {name:'某云计算科技 — 桌面云一期',amount:'¥500万',contractDate:'2026-03',delivery:'已交付',fulfillRate:'100%',recognition:'Q2 ¥500万',milestone:'2026-03 交付验收 / 2026-04 回款到账'},
+  {name:'某互联网集团 — 服务器框架协议',amount:'¥1,200万',contractDate:'2025-12',delivery:'分批履约中',fulfillRate:'65%',recognition:'Q2 ¥350万',milestone:'2026-02 首批交付 / 2026-05 第二批 / 2026-08 全部完成'},
+  {name:'某金融科技公司 — IT运维服务',amount:'¥300万',contractDate:'2026-01',delivery:'执行中',fulfillRate:'80%',recognition:'Q2 ¥240万',milestone:'2026-01~12 按月履约 / 季度确认收入'},
+  {name:'某政府信息中心 — 安全设备采购',amount:'¥600万',contractDate:'2025-11',delivery:'待验收',fulfillRate:'95%',recognition:'Q2 ¥570万',milestone:'2026-04 设备安装完成 / 等待客户签字验收'},
+  {name:'某信托公司 — 存储设备',amount:'¥180万',contractDate:'2026-02',delivery:'已交付',fulfillRate:'100%',recognition:'Q2 ¥180万',milestone:'2026-02 交付验收 / 2026-03 回款到账'}
+];
+var h='';
+orders.forEach(function(o,i){
+  h+='<div class="card"><div class="card-head"><span class="name">'+(i+1)+'. '+o.name+'</span><span class="amount">'+o.amount+'</span></div>';
+  h+='<div class="card-row"><span class="lbl">签约日期</span><span>'+o.contractDate+'</span><span class="lbl" style="margin-left:12px">履约状态</span><span>'+o.delivery+' （'+o.fulfillRate+'）</span></div>';
+  h+='<div class="card-row"><span class="lbl">Q2 收入确认</span><span style="color:var(--success);font-weight:600">'+o.recognition+'</span></div>';
+  h+='<div class="card-row"><span class="lbl">关键里程碑</span><span>'+o.milestone+'</span></div></div>';
+});
+document.getElementById('list').innerHTML=h;
+</script></body></html>

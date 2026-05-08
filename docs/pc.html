@@ -165,9 +165,12 @@ var AR = {
   name:'张三',role:'ar',region:'东南大区',territory:'浙江战区',industries:['企业级IT'],
   targets:{rev:{target:3500,achieved:1470,rank:'3/10',trend:1},ca:{target:2200,achieved:1210,rank:'3/10',trend:1},compA:{target:100,achieved:78,rank:'4/10',trend:1},compB:{target:100,achieved:82,rank:'3/10',trend:0}},
   customers:[
-    {name:'某云计算科技',rev:380,yoy:15,status:'good'},{name:'某大数据中心',rev:220,yoy:-10,status:'stalled'},
-    {name:'某互联网集团',rev:180,yoy:5,status:'good'},{name:'某金融科技公司',rev:140,yoy:-3,status:'stalled'},
-    {name:'某智能制造企业',rev:95,yoy:0,status:'risk'},{name:'某政府信息中心',rev:160,yoy:12,status:'good'}
+    {name:'某云计算科技',rev:380,yoy:15,status:'good',tier:'B1',highValue:true},
+    {name:'某大数据中心',rev:220,yoy:-10,status:'stalled',tier:'B2',highValue:true},
+    {name:'某互联网集团',rev:180,yoy:5,status:'good',tier:'B1',highValue:true},
+    {name:'某金融科技公司',rev:140,yoy:-3,status:'stalled',tier:'B3',highValue:false},
+    {name:'某智能制造企业',rev:95,yoy:0,status:'risk',tier:'B3',highValue:false},
+    {name:'某政府信息中心',rev:160,yoy:12,status:'good',tier:'B2',highValue:false}
   ],
   strategicTasks:[{label:'高价值客户经营',done:2,total:6},{label:'海光战核客户经营',done:2,total:4},{label:'重点战役',done:1,total:3},{label:'客户拜访',done:10,total:20}],
   bids:{
@@ -181,10 +184,25 @@ var AR = {
     {type:'task',time:'全天',content:'准备某大数据中心拜访沟通资料',priority:1}
   ],
   agentFeed:[
-    {from:'跟进Agent',msg:'某智能制造企业回款已延迟14天，建议今天联系财务确认',type:'warning'},
+    {from:'跟进Agent',msg:'某智能制造企业回款已延迟14天，建议联系财务确认',type:'warning'},
     {from:'洞察Agent',msg:'企业级IT行业新增2条高价值标讯：私有云平台、AI算力集群',type:'info'},
     {from:'教练Agent',msg:'某云计算科技拜访获评优秀案例，已沉淀到知识库',type:'success'},
     {from:'洞察Agent',msg:'竞品H公司在私有云平台项目已提交方案，建议尽快跟进',type:'warning'}
+  ],
+  opportunities:[
+    {name:'某云计算科技 — 混合云平台三期',amount:3200,stage:'方案演示',probability:60,status:'active',nextStep:'提供TCO报告和POC计划'},
+    {name:'某大数据中心 — 分布式存储扩容',amount:900,stage:'招标中',probability:50,status:'active',nextStep:'跟进投标'},
+    {name:'某互联网集团 — AI算力集群',amount:1800,stage:'初步接触',probability:35,status:'active',nextStep:'安排技术交流'},
+    {name:'某金融科技公司 — 服务器采购',amount:400,stage:'商务谈判',probability:70,status:'active',nextStep:'提交最终报价'},
+    {name:'某政府信息中心 — 政务云安全加固',amount:350,stage:'停滞',probability:20,status:'stalled',nextStep:'重新激活需求'},
+    {name:'某智能制造企业 — IT设备续约',amount:120,stage:'合同签署',probability:90,status:'closing',nextStep:'确认合同条款'}
+  ],
+  orders:[
+    {name:'某云计算科技 — 桌面云一期',amount:500,contractDate:'2026-03',deliveryStatus:'已交付',fulfillRate:'100%',recognition:'Q2 ¥500万'},
+    {name:'某互联网集团 — 服务器框架协议',amount:1200,contractDate:'2025-12',deliveryStatus:'分批履约中',fulfillRate:'65%',recognition:'Q2 ¥350万'},
+    {name:'某金融科技公司 — IT运维服务',amount:300,contractDate:'2026-01',deliveryStatus:'执行中',fulfillRate:'80%',recognition:'Q2 ¥240万'},
+    {name:'某政府信息中心 — 安全设备采购',amount:600,contractDate:'2025-11',deliveryStatus:'待验收',fulfillRate:'95%',recognition:'Q2 ¥570万'},
+    {name:'某信托公司 — 存储设备',amount:180,contractDate:'2026-02',deliveryStatus:'已交付',fulfillRate:'100%',recognition:'Q2 ¥180万'}
   ],
   mapPins:[
     {type:'sales',name:'张三',rev:40,x:42,y:25},{type:'sales',name:'李四',rev:52,x:25,y:40},{type:'sales',name:'王五',rev:35,x:58,y:35},
@@ -202,7 +220,7 @@ var AR = {
 
 var GM = {
   name:'王指挥',role:'gm',region:'东南大区',territory:'浙江战区',industries:['企业级IT','制造'],
-  targets:{rev:{target:18000,achieved:7560,rank:'2/8',trend:1},ca:{target:13000,achieved:7150,rank:'2/8',trend:1}},
+  targets:{rev:{target:18000,achieved:7560,rank:'2/8',trend:1},ca:{target:13000,achieved:7150,rank:'2/8',trend:1},compA:{target:100,achieved:72,rank:'3/8',trend:0},compB:{target:100,achieved:88,rank:'2/8',trend:1}},
   members:[
     {name:'张三',rev:40,ca:55,status:'good'},{name:'李四',rev:52,ca:60,status:'good'},
     {name:'王五',rev:28,ca:35,status:'risk'},{name:'赵六',rev:25,ca:30,status:'risk'},
@@ -224,6 +242,12 @@ var GM = {
     {from:'跟进Agent',msg:'钱七拜访量仅达标40%，需过程抽检',type:'warning'},
     {from:'洞察Agent',msg:'东南大区新增私有云平台、AI算力集群等高价值标讯待分配',type:'info'},
     {from:'教练Agent',msg:'赵六作为新人，建议本周安排带教计划',type:'info'}
+  ],
+  orders:[
+    {name:'浙江战区合计',amount:1840,contractDate:'—',deliveryStatus:'—',fulfillRate:'78%',recognition:'Q2 ¥1,840万',memberBreakdown:[{name:'张三',amount:500},{name:'李四',amount:420},{name:'孙八',amount:380},{name:'王五',amount:240},{name:'赵六',amount:180},{name:'钱七',amount:120}]},
+  ],
+  opportunities:[
+    {name:'浙江战区合计',amount:7770,count:18,avgProbability:48,stageBreakdown:{'初步接触':4,'需求确认':3,'方案演示':5,'招标/报价':3,'商务谈判':2,'合同签署':1},stalledCount:2,closingCount:3},
   ],
   regions:{
     list:[
@@ -283,13 +307,11 @@ function renderMetrics(){
   var c=document.getElementById('mtr'); if(!c) return; c.innerHTML='';
   var t=data.targets;
   var items=[
-    {l:'Q2 REV',v:fmtP(t.rev.achieved,t.rev.target),s:fmtK(t.rev.achieved)+' / '+fmtK(t.rev.target)+' · 排名'+t.rev.rank,tr:t.rev.trend},
-    {l:'Q2 CA',v:fmtP(t.ca.achieved,t.ca.target),s:'排名 '+t.ca.rank,tr:t.ca.trend}
+    {l:'CPS完成率',v:fmtP(t.rev.achieved,t.rev.target),s:fmtK(t.rev.achieved)+' / '+fmtK(t.rev.target)+' · 排名'+t.rev.rank,tr:t.rev.trend},
+    {l:'K1 复合完成率',v:fmtP(t.ca.achieved,t.ca.target),s:'排名 '+t.ca.rank,tr:t.ca.trend}
   ];
-  if(role==='ar'){
-    items.push({l:'竞争力 A',v:fmtV(t.compA.achieved),s:'排名 '+t.compA.rank,tr:t.compA.trend});
-    items.push({l:'竞争力 B',v:fmtV(t.compB.achieved),s:'排名 '+t.compB.rank,tr:t.compB.trend});
-  }
+  if(t.compA) items.push({l:'K2 复合完成率',v:fmtV(t.compA.achieved),s:'排名 '+t.compA.rank,tr:t.compA.trend});
+  if(t.compB) items.push({l:'K3 REV完成率',v:fmtV(t.compB.achieved),s:'排名 '+t.compB.rank,tr:t.compB.trend});
   items.forEach(function(m){
     var ic=m.tr>0?'▲':m.tr<0?'▼':'—';
     var cc=m.tr>0?'var(--success)':m.tr<0?'var(--danger)':'';
@@ -307,19 +329,35 @@ function renderMetrics(){
 function renderCustomers(){
   var c=document.getElementById('cust'); if(!c) return;
   c.innerHTML='<div class="sec-hd"><span>👤</span> 客户经营情况 <span class="badge badge-i st">'+data.customers.length+'家</span></div>';
+  // Header
+  c.appendChild(h('div',{c:'row-item',s:'font-size:10px;color:var(--text-muted);font-weight:600;padding-bottom:6px;border-bottom:2px solid var(--border-light)',h:
+    '<span style="flex:1.5">客户名称</span>'+
+    '<span style="flex:0.5;text-align:center">等级</span>'+
+    '<span style="flex:0.6;text-align:center">标签</span>'+
+    '<span style="flex:1;text-align:right">YTD REV 产出</span>'+
+    '<span style="flex:0.8;text-align:right">YOY 变化</span>'+
+    '<span style="flex:1;text-align:center">经营状态</span>'+
+    '<span style="flex:0.5;text-align:right">操作</span>'
+  }));
   data.customers.forEach(function(cu){
     var sb=cu.status==='good'?'<span class="badge badge-s">● 正常</span>':
       cu.status==='stalled'?'<span class="badge badge-w">● 停滞</span>':
       '<span class="badge badge-d"><span class="pulse pulse-d"></span>风险</span>';
     var yc=cu.yoy>0?'color:var(--success);font-weight:600':cu.yoy<0?'color:var(--danger);font-weight:600':'color:var(--text-muted)';
     var ys=cu.yoy>0?'+':'';
+    var tierBadge='<span class="badge badge-i">'+cu.tier+'</span>';
+    var hvTag=cu.highValue?'<span class="badge badge-high">高价值</span>':'';
     c.appendChild(h('div',{c:'row-item',h:
-      '<span style="flex:2;font-weight:600">'+cu.name+'</span>'+
+      '<span style="flex:1.5;font-weight:600">'+cu.name+'</span>'+
+      '<span style="flex:0.5;text-align:center">'+tierBadge+'</span>'+
+      '<span style="flex:0.6;text-align:center">'+hvTag+'</span>'+
       '<span class="mono" style="flex:1;text-align:right">'+fmtK(cu.rev)+'</span>'+
       '<span class="mono" style="flex:0.8;text-align:right;'+yc+'">'+ys+cu.yoy+'%</span>'+
-      '<span style="flex:1.2;text-align:center">'+sb+'</span>'+
-      '<span style="flex:0.6;text-align:right;color:var(--purple);cursor:pointer;font-size:11px">详情 ▸</span>'}));
+      '<span style="flex:1;text-align:center">'+sb+'</span>'+
+      '<span class="cust-detail-link" data-cust="'+cu.name+'" style="flex:0.5;text-align:right;color:var(--purple);cursor:pointer;font-size:11px">详情 ▸</span>'}));
   });
+  // Delegate click for customer detail links
+  c.onclick=function(e){ var t=e.target.closest('.cust-detail-link'); if(t){ window.open('customer-detail.html?name='+encodeURIComponent(t.getAttribute('data-cust')),'_blank'); } };
 }
 
 // ── MODULE 2b: 成员达成率排名 (GM) ──
@@ -411,10 +449,10 @@ function renderGap(){
   }
 }
 
-// ── MODULE 6a: 当日行动提醒 ──
+// ── MODULE 6a: 当日行动提醒 + Agent 建议 ──
 function renderActions(){
   var c=document.getElementById('acts'); if(!c) return;
-  c.innerHTML='<div class="sec-hd"><span>📋</span> 当日行动提醒</div>';
+  c.innerHTML='<div class="sec-hd"><span>📋</span> 当日行动提醒 '+(data.agentFeed?'<span class="badge badge-purple" style="font-size:9px">含Agent建议</span>':'')+'</div>';
   var icons={visit:'🔹',bid:'📡',meeting:'📅',task:'📌'};
   data.actions.forEach(function(a){
     var urgent=a.priority>=2;
@@ -422,6 +460,15 @@ function renderActions(){
       (icons[a.type]||'•')+' <span class="mono" style="font-size:10px;color:var(--text-muted)">'+a.time+'</span> '+a.content+
       (urgent?' <span class="pulse pulse-d"></span>':'')}));
   });
+  // Agent suggestions inline with subtle visual distinction
+  if(data.agentFeed){
+    data.agentFeed.forEach(function(f){
+      var icon=f.type==='danger'?'🚨':f.type==='warning'?'⚠':f.type==='success'?'🏆':'💡';
+      var bg=f.type==='danger'?'var(--danger-subtle)':f.type==='warning'?'var(--warning-subtle)':'var(--purple-light)';
+      c.appendChild(h('div',{s:'padding:5px 0;font-size:11px;background:'+bg+';border-radius:4px;padding-left:6px;margin-top:2px',h:
+        '<span class="badge badge-purple" style="font-size:8px;margin-right:4px">🤖 '+f.from+'</span>'+icon+' '+f.msg}));
+    });
+  }
   if(role==='gm'){
     c.appendChild(h('div',{s:'margin-top:8px;padding-top:8px;border-top:1px solid var(--border-light)',h:
       '<div style="font-weight:700;font-size:12px;margin-bottom:6px;color:var(--purple)">👔 团队管理</div>'+
@@ -431,16 +478,107 @@ function renderActions(){
   }
 }
 
-// ── MODULE 6b: Agent Feed ──
+// ── MODULE 6b: 我的/团队 订单 + 商机 ──
 function renderFeed(){
+  if(role==='gm'){ renderGMFeed(); return; }
+  renderARFeed();
+}
+function renderARFeed(){
   var c=document.getElementById('feed'); if(!c) return;
-  c.innerHTML='<div class="sec-hd"><span>🤖</span> Agent Feed <span class="badge badge-purple" style="font-size:9px">实时</span></div>';
-  var colors={warning: 'var(--warning-subtle)',success: 'rgba(20,158,97,0.08)',danger: 'var(--danger-subtle)',info: 'var(--info-subtle)'};
-  data.agentFeed.forEach(function(f){
-    var icon=f.type==='danger'?'🚨':f.type==='warning'?'⚠':f.type==='success'?'🏆':'💡';
-    c.appendChild(h('div',{s:'background:'+(colors[f.type]||colors.info)+';padding:8px 10px;border-radius:var(--r-md);margin-bottom:5px;font-size:11px;line-height:1.45',h:
-      '<span style="font-size:9px;color:var(--text-muted)">'+f.from+'</span><br>'+icon+' '+f.msg}));
+  c.style.display='flex'; c.style.gap='10px'; c.style.flexDirection='row';
+  c.innerHTML='';
+
+  // ── LEFT: 我的订单 ──
+  var orders=data.orders||[];
+  var left=h('div',{s:'flex:1;min-width:0'});
+  left.appendChild(h('div',{s:'margin-bottom:8px',h:'<div class="sec-hd"><span>📦</span> 我的订单 <span class="badge badge-i st">'+orders.length+'笔</span></div>'}));
+  if(orders.length){
+    orders.slice(0,3).forEach(function(o){
+      var ds=o.fulfillRate==='100%'?'<span class="badge badge-s">'+o.deliveryStatus+'</span>':
+        parseInt(o.fulfillRate)>=80?'<span class="badge badge-i">'+o.deliveryStatus+'</span>':
+        '<span class="badge badge-w">'+o.deliveryStatus+'</span>';
+      left.appendChild(h('div',{c:'row-item',h:
+        '<span style="flex:2;font-weight:600;font-size:11px">'+o.name+'</span>'+
+        '<span class="mono" style="flex:1;text-align:right;font-size:10px">'+fmtK(o.amount)+'</span>'+
+        '<span style="flex:1;text-align:center">'+ds+'</span>'}));
+    });
+    left.appendChild(h('div',{s:'text-align:center;padding:4px;font-size:10px',h:'<a href="orders-detail.html" target="_blank" style="color:var(--purple)">查看全部 '+orders.length+' 笔订单 →</a>'}));
+  }
+  c.appendChild(left);
+
+  // ── RIGHT: 我的商机 ──
+  var opps=data.opportunities||[];
+  var right=h('div',{s:'flex:1;min-width:0'});
+  right.appendChild(h('div',{s:'margin-bottom:8px',h:'<div class="sec-hd"><span>📈</span> 我的商机 <span class="badge badge-i st">'+opps.length+'个</span></div>'}));
+  if(opps.length){
+    opps.slice(0,3).forEach(function(o){
+      var pct=o.probability;
+      var cls=pct>=60?'trk-s':pct>=40?'trk-w':'trk-d';
+      var sc=o.status==='stalled'?'background:var(--warning-subtle);':o.status==='closing'?'background:var(--info-subtle);':'';
+      right.appendChild(h('div',{s:'padding:5px 6px;border-radius:4px;margin-bottom:3px;border:1px solid var(--border-light);'+sc,h:
+        '<div style="display:flex;justify-content:space-between;font-size:10px"><span style="font-weight:600">'+o.name+'</span><span class="mono" style="color:var(--text-secondary)">'+fmtK(o.amount)+'</span></div>'+
+        '<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-muted);margin:2px 0"><span>'+(o.status==='active'?'🟢 推进中':o.status==='stalled'?'🟡 停滞':'🔵 即将签单')+'</span><span class="mono">'+pct+'%</span></div>'+
+        '<div class="progress"><div class="trk '+cls+'" style="width:'+pct+'%"></div></div>'
+      }));
+    });
+    right.appendChild(h('div',{s:'text-align:center;padding:4px;font-size:10px',h:'<a href="opportunities-detail.html" target="_blank" style="color:var(--purple)">查看全部 '+opps.length+' 个商机 →</a>'}));
+  }
+  c.appendChild(right);
+}
+
+function renderGMFeed(){
+  var c=document.getElementById('feed'); if(!c) return;
+  c.style.display='flex'; c.style.gap='10px'; c.style.flexDirection='row';
+  c.innerHTML='';
+
+  var orders=data.orders||[];
+  var opps=data.opportunities||[];
+
+  // ── LEFT: 团队订单 ──
+  var left=h('div',{s:'flex:1;min-width:0'});
+  left.appendChild(h('div',{s:'margin-bottom:6px',h:'<div class="sec-hd"><span>📦</span> 团队订单 <span class="badge badge-i st">Q2 ¥1,840万</span></div>'}));
+  // Bar chart
+  var maxO=0;
+  (orders[0]?.memberBreakdown||[]).forEach(function(m){if(m.amount>maxO)maxO=m.amount;});
+  (orders[0]?.memberBreakdown||[]).forEach(function(m){
+    var w=m.amount/maxO*100;
+    left.appendChild(h('div',{s:'display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:10px',h:
+      '<span style="width:36px;text-align:right;color:var(--text-muted)">'+m.name+'</span>'+
+      '<span style="flex:1;height:14px;background:var(--border-light);border-radius:3px;overflow:hidden">'+
+      '<span style="display:block;height:100%;width:'+w+'%;background:var(--purple);border-radius:3px"></span></span>'+
+      '<span class="mono" style="width:40px;color:var(--text-secondary)">¥'+m.amount+'万</span>'
+    }));
   });
+  left.appendChild(h('div',{s:'text-align:center;padding:4px;font-size:10px',h:'<a href="orders-detail.html" target="_blank" style="color:var(--purple)">查看订单详情 →</a>'}));
+  c.appendChild(left);
+
+  // ── RIGHT: 团队商机 ──
+  var right=h('div',{s:'flex:1;min-width:0'});
+  right.appendChild(h('div',{s:'margin-bottom:6px',h:'<div class="sec-hd"><span>📈</span> 团队商机 <span class="badge badge-i st">'+opps[0].count+'个</span></div>'}));
+  // Pipeline stage distribution
+  var stages=['初步接触','需求确认','方案演示','招标/报价','商务谈判','合同签署'];
+  var sb=opps[0].stageBreakdown||{};
+  right.appendChild(h('div',{s:'font-size:10px;color:var(--text-muted);margin-bottom:4px',h:'Pipeline 阶段分布'}));
+  var maxS=0; stages.forEach(function(s){if((sb[s]||0)>maxS)maxS=sb[s]||0;});
+  stages.forEach(function(s){
+    var n=sb[s]||0; var w=maxS?n/maxS*100:0;
+    var cl=s==='合同签署'?'trk-s':s==='初步接触'?'trk-d':'trk-w';
+    right.appendChild(h('div',{s:'display:flex;align-items:center;gap:4px;margin-bottom:3px;font-size:9px',h:
+      '<span style="width:40px;text-align:right;color:var(--text-muted)">'+s+'</span>'+
+      '<span style="flex:1;height:10px;background:var(--border-light);border-radius:2px;overflow:hidden">'+
+      '<span class="trk '+cl+'" style="display:block;height:100%;width:'+w+'%"></span></span>'+
+      '<span class="mono" style="width:16px;color:var(--text-secondary)">'+n+'</span>'
+    }));
+  });
+  // Summary stats
+  right.appendChild(h('div',{s:'margin-top:6px;padding-top:6px;border-top:1px solid var(--border-light);font-size:10px',h:
+    '<div style="display:flex;justify-content:space-between"><span>商机总金额</span><span class="mono" style="font-weight:700;color:var(--purple)">'+fmtK(opps[0].amount)+'</span></div>'+
+    '<div style="display:flex;justify-content:space-between;margin-top:2px"><span>平均赢单率</span><span class="mono">'+opps[0].avgProbability+'%</span></div>'+
+    '<div style="display:flex;justify-content:space-between;margin-top:2px"><span>🟡 停滞</span><span style="color:var(--warning)">'+opps[0].stalledCount+'个</span></div>'+
+    '<div style="display:flex;justify-content:space-between;margin-top:2px"><span>🔵 即将签单</span><span style="color:var(--info)">'+opps[0].closingCount+'个</span></div>'
+  }));
+  right.appendChild(h('div',{s:'text-align:center;padding:4px;font-size:10px',h:'<a href="opportunities-detail.html" target="_blank" style="color:var(--purple)">查看商机详情 →</a>'}));
+  c.appendChild(right);
 }
 
 // ═══════ MAP ═══════
@@ -530,7 +668,8 @@ function renderRightDashboard(right){
     '<div class="rp-row"><span>REV 达成</span><span class="mono" style="font-weight:700;color:var(--danger)">'+revPct+'</span></div>'+
     '<div class="rp-row"><span>CA 达成</span><span class="mono" style="font-weight:700;color:var(--success)">'+caPct+'</span></div>'+
     '<div class="rp-row"><span>排名</span><span>'+t.rev.rank+'</span></div>'+
-    (role==='ar'?'<div class="rp-row"><span>竞争力A</span><span class="mono">'+fmtV(t.compA.achieved)+'</span></div><div class="rp-row"><span>竞争力B</span><span class="mono">'+fmtV(t.compB.achieved)+'</span></div>':'')
+    (t.compA?'<div class="rp-row"><span>K2 复合完成率</span><span class="mono">'+fmtV(t.compA.achieved)+'</span></div>':'')+
+    (t.compB?'<div class="rp-row"><span>K3 REV完成率</span><span class="mono">'+fmtV(t.compB.achieved)+'</span></div>':'')
   }));
 
   // Sales list

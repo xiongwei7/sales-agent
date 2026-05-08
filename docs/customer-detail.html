@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>客户 Account Plan · 作战导航</title>
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  body { background: var(--bg); }
+  .page { max-width: 960px; margin: 0 auto; padding: 24px; }
+  .back { display:inline-flex;align-items:center;gap:4px;color:var(--purple);text-decoration:none;font-size:13px;font-weight:600;margin-bottom:20px; }
+  .back:hover { color:var(--purple-dark); }
+  h1 { font-family:var(--font-display);font-size:22px;font-weight:700;margin-bottom:4px; }
+  .sub { color:var(--text-muted);font-size:12px;margin-bottom:24px; }
+
+  .section { margin-bottom:20px; }
+  .section-title { font-family:var(--font-display);font-size:14px;font-weight:700;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--purple); }
+
+  .info-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 20px;background:#fff;border-radius:var(--r-xl);padding:14px 18px;border:1px solid var(--border-light);box-shadow:var(--shadow-sm); }
+  .info-item { display:flex;justify-content:space-between;padding:6px 0;font-size:12px;border-bottom:1px solid var(--border-light); }
+  .info-item:last-child { border-bottom:none; }
+  .info-item .lbl { color:var(--text-muted); }
+  .info-item .val { font-weight:600;color:var(--text);text-align:right; }
+
+  .tag-row { display:flex;gap:6px;flex-wrap:wrap;margin-top:4px; }
+  .tag { display:inline-block;padding:3px 10px;border-radius:var(--r-full);font-size:11px;font-weight:600; }
+  .tag-green { background:var(--success-subtle);color:var(--success-dark); }
+  .tag-red { background:var(--danger-subtle);color:var(--danger-dark); }
+  .tag-purple { background:var(--purple-subtle);color:var(--purple); }
+
+  .card-list { display:flex;flex-direction:column;gap:8px; }
+  .card-item { background:#fff;border-radius:var(--r-lg);padding:14px 16px;border:1px solid var(--border-light);box-shadow:var(--shadow-sm); }
+  .card-item .ci-title { font-weight:700;font-size:13px;margin-bottom:4px; }
+  .card-item .ci-desc { font-size:11px;color:var(--text-secondary);line-height:1.6; }
+  .card-item .ci-meta { font-size:10px;color:var(--text-muted);margin-top:6px; }
+
+  .timeline { position:relative;padding-left:20px; }
+  .timeline::before { content:'';position:absolute;left:8px;top:4px;bottom:4px;width:2px;background:var(--border); }
+  .tl-item { position:relative;margin-bottom:12px;padding-left:6px; }
+  .tl-item::before { content:'';position:absolute;left:-16px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--purple); }
+  .tl-item .tl-date { font-size:10px;color:var(--text-muted); }
+  .tl-item .tl-content { font-size:12px;color:var(--text);margin-top:2px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <a href="javascript:history.back()" class="back">← 返回指挥舱</a>
+  <h1 id="custName">客户 Account Plan</h1>
+  <p class="sub" id="custSub"></p>
+
+  <!-- 客户基础信息 -->
+  <div class="section">
+    <div class="section-title">📋 客户基础信息</div>
+    <div class="info-grid" id="basicInfo"></div>
+  </div>
+
+  <!-- IT Spending -->
+  <div class="section">
+    <div class="section-title">💰 IT Spending 信息</div>
+    <div class="info-grid" id="itSpending"></div>
+  </div>
+
+  <!-- 现有产品应用场景 -->
+  <div class="section">
+    <div class="section-title">🖥️ 现有产品应用场景</div>
+    <div class="card-list" id="scenarios"></div>
+  </div>
+
+  <!-- 友商情况 -->
+  <div class="section">
+    <div class="section-title">⚔️ 友商情况</div>
+    <div class="card-list" id="competitors"></div>
+  </div>
+
+  <!-- 渠道商画像 -->
+  <div class="section">
+    <div class="section-title">🤝 渠道商画像</div>
+    <div class="card-list" id="partners"></div>
+  </div>
+
+  <!-- 客户重点项目 -->
+  <div class="section">
+    <div class="section-title">📌 客户重点项目</div>
+    <div class="card-list" id="projects"></div>
+  </div>
+
+  <!-- 最近拜访沟通记录 -->
+  <div class="section">
+    <div class="section-title">📝 最近拜访沟通记录</div>
+    <div class="timeline" id="visits"></div>
+  </div>
+</div>
+
+<script>
+var custName = (new URLSearchParams(window.location.search)).get('name')||'';
+document.getElementById('custName').textContent = custName + ' · Account Plan';
+document.getElementById('custSub').textContent = '东南大区 · 浙江战区 · 企业级IT行业';
+
+// Mock account plan data per customer
+var plans = {
+  '某云计算科技': {
+    industry:'互联网/云计算', territory:'浙江战区',
+    itStrategy:'多云架构转型，3年内将核心业务迁移至混合云，重点投入 AI 算力基础设施',
+    itSpending:'¥8,500万/年',
+    desktop:'✅ 可参与 — 桌面云终端 2000+ 点',
+    enterprise:'✅ 可参与 — 通用服务器 120 台、分布式存储 2PB',
+    software:'✅ 可参与 — 云管平台、容器平台',
+    scenarios:[
+      {title:'核心交易系统',desc:'基于鲲鹏服务器的核心交易平台，日均处理 5000 万笔交易，要求 99.99% 可用性'},
+      {title:'AI 训练集群',desc:'GPU 服务器集群用于大模型训练，现有 200 节点，计划扩容至 500 节点'},
+      {title:'云桌面办公',desc:'2000+ 员工的研发桌面云，已采购一期 500 点，体验良好拟扩二期'}
+    ],
+    competitors:[
+      {name:'H公司',position:'核心供应商',strength:'品牌认知度高，政企关系深厚',weakness:'供货周期长，定制化响应慢',threatLevel:'high'},
+      {name:'HP',position:'次要供应商',strength:'渠道覆盖广',weakness:'产品线收缩，服务能力下降',threatLevel:'medium'},
+      {name:'Dell',position:'潜在进入',strength:'价格灵活',weakness:'国产化资质不足',threatLevel:'low'}
+    ],
+    partners:[
+      {name:'神州数码',role:'总代',coverage:'全国',strength:'物流和资金平台成熟'},
+      {name:'杭州云服科技',role:'区域集成商',coverage:'浙江省',strength:'本地化服务能力强，客户关系紧密'}
+    ],
+    projects:[
+      {name:'混合云平台三期建设',amount:'¥3,200万',stage:'方案阶段',deadline:'2026-Q3',probability:'60%'},
+      {name:'AI 算力集群扩容',amount:'¥1,800万',stage:'招标中',deadline:'2026-06',probability:'40%'},
+      {name:'桌面云二期',amount:'¥500万',stage:'商务谈判',deadline:'2026-05',probability:'80%'}
+    ],
+    visits:[
+      {date:'2026-05-03',type:'方案演示',summary:'向CTO演示混合云方案，获得正面反馈。CTO关注：国产化生态兼容性、TCO对比。下一步：提供详细TCO报告和POC计划。',agent:'张三'},
+      {date:'2026-04-18',type:'商务拜访',summary:'与采购总监沟通年度采购计划。对方透露Q3有服务器采购预算释放。已同步作战计划Agent生成跟进任务。',agent:'张三'},
+      {date:'2026-04-02',type:'技术交流',summary:'与基础架构团队进行鲲鹏服务器兼容性测试沟通。测试环境已搭建，预计两周内出结果。',agent:'张三'}
+    ]
+  },
+  '某大数据中心': {
+    industry:'数据中心/IDC', territory:'浙江战区',
+    itStrategy:'绿色数据中心改造，提升 PUE 效率，逐步替换老旧存储设备，引入软件定义存储架构',
+    itSpending:'¥4,200万/年',
+    desktop:'❌ 暂不参与 — 办公终端已饱和',
+    enterprise:'✅ 可参与 — 分布式存储 1PB、备份一体机',
+    software:'✅ 可参与 — 数据管理平台、灾备软件',
+    scenarios:[
+      {title:'冷数据归档系统',desc:'现有 500TB 冷数据需归档，采用分层存储方案（SSD+HDD+蓝光）降低TCO'},
+      {title:'容灾备份系统',desc:'两地三中心容灾架构升级，异地备份 RPO<10 分钟'},
+      {title:'数据中心基础设施监控',desc:'DCIM 系统升级，统一监控电力、温湿度、机柜空间'}
+    ],
+    competitors:[
+      {name:'H公司',position:'主要供应商',strength:'存储产品线完整',weakness:'项目响应速度下降',threatLevel:'high'},
+      {name:'浪潮',position:'竞争厂商',strength:'国产化优势明显',weakness:'服务网络不如我方',threatLevel:'medium'}
+    ],
+    partners:[{name:'中软国际',role:'实施服务商',coverage:'华东',strength:'实施团队规模大'}],
+    projects:[
+      {name:'分布式存储扩容',amount:'¥900万',stage:'招标中',deadline:'2026-Q2',probability:'50%'},
+      {name:'灾备系统升级',amount:'¥600万',stage:'需求确认',deadline:'2026-Q3',probability:'35%'}
+    ],
+    visits:[
+      {date:'2026-04-20',type:'技术交流',summary:'与运维总监沟通存储扩容需求。客户关注存储性能和能耗比。我方展示了分布式存储的TCO优势。',agent:'张三'},
+      {date:'2026-03-15',type:'客户拜访',summary:'拜访CIO了解年度规划。对方提到H公司方案报价过高，存在替换机会。',agent:'李四'}
+    ]
+  },
+  '某互联网集团': {
+    industry:'互联网/在线服务', territory:'浙江战区',
+    itStrategy:'业务出海加速，海外数据中心布局需求迫切。国内侧推进智能运维AIOps建设',
+    itSpending:'¥6,000万/年',
+    desktop:'✅ 可参与 — 研发笔记本 500+ 台/年',
+    enterprise:'✅ 可参与 — GPU 服务器、高速交换机',
+    software:'✅ 可参与 — AIOps 平台、安全态势感知',
+    scenarios:[
+      {title:'海外数据中心建设',desc:'计划在新加坡、法兰克福新建两个中型数据中心，需全套基础设施方案'},
+      {title:'AIOps 智能运维平台',desc:'基于机器学习的故障预测和自动根因分析，减少 MTTR 50%'},
+      {title:'零信任安全架构',desc:'全面升级安全架构，部署微隔离和动态访问控制'}
+    ],
+    competitors:[
+      {name:'H公司',position:'海外主力',strength:'海外渠道和服务网络完善',weakness:'价格偏高',threatLevel:'high'},
+      {name:'AWS',position:'云服务商',strength:'公有云服务成熟',weakness:'私有化部署能力弱',threatLevel:'medium'}
+    ],
+    partners:[{name:'软通动力',role:'海外实施伙伴',coverage:'亚太',strength:'新加坡本地团队'}],
+    projects:[
+      {name:'海外数据中心项目',amount:'¥2,500万',stage:'初步接触',deadline:'2026-Q4',probability:'25%'},
+      {name:'AIOps平台建设',amount:'¥800万',stage:'方案阶段',deadline:'2026-Q3',probability:'45%'}
+    ],
+    visits:[
+      {date:'2026-04-25',type:'高层交流',summary:'与VP of Infra沟通海外数据中心需求。客户正在评估自建 vs 托管方案。我方提出了混合方案建议。',agent:'张三'}
+    ]
+  }
+};
+
+// Default plan for customers without specific data
+var defaultPlan = {
+  industry:'企业级IT', territory:'浙江战区',
+  itStrategy:'数字化转型阶段，IT基础设施升级改造为主要方向',
+  itSpending:'¥2,000-5,000万/年',
+  desktop:'待评估',
+  enterprise:'待评估',
+  software:'待评估',
+  scenarios:[{title:'IT基础设施升级',desc:'客户正在进行IT基础设施评估和规划'}],
+  competitors:[{name:'H公司',position:'主要竞争对手',strength:'品牌优势',weakness:'价格偏高',threatLevel:'medium'}],
+  partners:[{name:'待开发渠道',role:'区域集成商',coverage:'浙江省',strength:'—'}],
+  projects:[{name:'年度IT采购',amount:'待确认',stage:'需求确认',deadline:'—',probability:'—'}],
+  visits:[{date:'—',type:'—',summary:'暂无最近拜访记录',agent:'—'}]
+};
+
+var plan = plans[custName] || defaultPlan;
+
+// Render
+function kv(l,v){return'<div class="info-item"><span class="lbl">'+l+'</span><span class="val">'+v+'</span></div>';}
+function tag(t,c){return'<span class="tag tag-'+c+'">'+t+'</span>';}
+
+document.getElementById('basicInfo').innerHTML =
+  kv('客户名称',custName)+
+  kv('行业归属',plan.industry)+
+  kv('所属战区',plan.territory)+
+  kv('客户等级',custName.indexOf('云计算')>=0||custName.indexOf('大数据')>=0||custName.indexOf('互联网')>=0?'B1':'B2');
+
+document.getElementById('itSpending').innerHTML =
+  kv('IT 信息化战略方向',plan.itStrategy)+
+  kv('年度 IT Spending',plan.itSpending)+
+  kv('桌面级产品',plan.desktop)+
+  kv('企业级产品',plan.enterprise)+
+  kv('软件及服务',plan.software);
+
+var scHTML='';
+plan.scenarios.forEach(function(s){scHTML+='<div class="card-item"><div class="ci-title">'+s.title+'</div><div class="ci-desc">'+s.desc+'</div></div>';});
+document.getElementById('scenarios').innerHTML=scHTML||'<div class="card-item"><div class="ci-desc">暂无场景数据</div></div>';
+
+var compHTML='';
+plan.competitors.forEach(function(c){
+  compHTML+='<div class="card-item"><div class="ci-title">'+c.name+' — '+c.position+'</div><div class="ci-desc">优势：'+c.strength+'<br>劣势：'+c.weakness+'</div><div class="ci-meta">威胁等级：'+(c.threatLevel==='high'?'<span class="tag tag-red">高</span>':c.threatLevel==='medium'?'<span class="tag tag-purple">中</span>':'<span class="tag tag-green">低</span>')+'</div></div>';
+});
+document.getElementById('competitors').innerHTML=compHTML;
+
+var partHTML='';
+plan.partners.forEach(function(p){
+  partHTML+='<div class="card-item"><div class="ci-title">'+p.name+'</div><div class="ci-desc">角色：'+p.role+' · 覆盖：'+p.coverage+'<br>优势：'+p.strength+'</div></div>';
+});
+document.getElementById('partners').innerHTML=partHTML;
+
+var projHTML='';
+plan.projects.forEach(function(p){
+  projHTML+='<div class="card-item"><div class="ci-title">'+p.name+'</div><div class="ci-desc">金额：'+p.amount+' · 阶段：'+p.stage+' · 预计：'+p.deadline+' · 赢单率：'+p.probability+'</div></div>';
+});
+document.getElementById('projects').innerHTML=projHTML;
+
+var visitHTML='';
+plan.visits.forEach(function(v){
+  visitHTML+='<div class="tl-item"><div class="tl-date">'+v.date+' · '+v.type+' · 拜访人：'+v.agent+'</div><div class="tl-content">'+v.summary+'</div></div>';
+});
+document.getElementById('visits').innerHTML=visitHTML;
+</script>
+</body>
+</html>
