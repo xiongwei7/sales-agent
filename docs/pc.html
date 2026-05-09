@@ -524,19 +524,20 @@ function renderActions(){
   var c=document.getElementById('acts'); if(!c) return;
   c.innerHTML='<div class="sec-hd"><span>📋</span> 当日行动提醒 '+(data.agentFeed?'<span class="badge badge-purple" style="font-size:9px">含Agent建议</span>':'')+'</div>';
   var icons={visit:'🔹',bid:'📡',meeting:'📅',task:'📌'};
+  var typeLabels={visit:'拜访',bid:'标讯',meeting:'日程',task:'任务'};
   data.actions.forEach(function(a){
     var urgent=a.priority>=2;
     c.appendChild(h('div',{s:'padding:5px 0;font-size:12px;'+(urgent?'color:var(--danger);font-weight:500':'color:var(--text)')+';',h:
+      '<span class="badge badge-purple" style="font-size:8px;margin-right:4px">'+(typeLabels[a.type]||a.type)+'</span>'+
       (icons[a.type]||'•')+' <span class="mono" style="font-size:10px;color:var(--text-muted)">'+a.time+'</span> '+a.content+
       (urgent?' <span class="pulse pulse-d"></span>':'')}));
   });
-  // Agent suggestions inline with subtle visual distinction
+  // Agent suggestions — same row style
   if(data.agentFeed){
     data.agentFeed.forEach(function(f){
       var icon=f.type==='danger'?'🚨':f.type==='warning'?'⚠':f.type==='success'?'🏆':'💡';
-      var bg=f.type==='danger'?'var(--danger-subtle)':f.type==='warning'?'var(--warning-subtle)':'var(--purple-light)';
-      c.appendChild(h('div',{s:'padding:5px 0;font-size:11px;background:'+bg+';border-radius:4px;padding-left:6px;margin-top:2px',h:
-        '<span class="badge badge-purple" style="font-size:8px;margin-right:4px">Agent '+f.from+'</span>'+icon+' '+f.msg}));
+      c.appendChild(h('div',{s:'padding:5px 0;font-size:12px',h:
+        '<span class="badge badge-purple" style="font-size:8px;margin-right:4px">提醒</span>'+icon+' '+f.msg}));
     });
   }
   if(role==='gm'){
